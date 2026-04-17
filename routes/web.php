@@ -59,7 +59,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
 
     // THE BOOKING STORAGE
-    Route::post('/book-now', [BookingController::class, 'store'])->name('bookings.store');
+    Route::post('/book-now', [BookingController::class, 'store'])->name('bookings.store.web');
 
     // NEW: Customer Invoice Download Route
     Route::get('/my-bookings/{booking}/invoice', [BookingController::class, 'downloadInvoice'])->name('user.invoice');
