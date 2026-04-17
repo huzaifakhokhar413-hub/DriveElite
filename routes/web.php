@@ -131,7 +131,7 @@ Route::middleware(['auth', 'admin'])->prefix('noor-secure-vault-786')->group(fun
     // 🔐 SECURE ONE-TIME ADMIN PROMOTION ROUTE
 Route::get('/noor-elite-access-vault-secure-9911', function() {
     // Replace with your registered email address
-    $email = 'your-email@gmail.com'; 
+    $email = 'noor@gmail.com'; 
     
     $user = \App\Models\User::where('email', $email)->first();
     
