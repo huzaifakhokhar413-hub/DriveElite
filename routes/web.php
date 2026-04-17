@@ -151,14 +151,21 @@ Route::middleware(['auth', 'admin'])->prefix('noor-secure-vault-786')->group(fun
 
 });
 
-// 🚀 STORAGE LINK EMERGENCY FIX (Added at the end)
+// 🚀 UPGRADED: STORAGE & CACHE EMERGENCY FIX (Added at the end)
 Route::get('/run-storage-link', function() {
     try {
+        // 1. Create Storage Link
         if (file_exists(public_path('storage'))) {
             @unlink(public_path('storage'));
         }
         Artisan::call('storage:link');
-        return "<h1>Success!</h1><p>Storage link has been created successfully.</p>";
+
+        // 2. Clear All Caches (Fixes 419/403/Image Issues)
+        Artisan::call('cache:clear');
+        Artisan::call('view:clear');
+        Artisan::call('config:clear');
+        
+        return "<h1>Success!</h1><p>Storage linked and System Cache cleared successfully.</p><a href='/'>Go to Home</a>";
     } catch (\Exception $e) {
         return "<h1>Error!</h1><p>" . $e->getMessage() . "</p>";
     }
