@@ -33,6 +33,26 @@ Route::get('/fix-db', function() {
     }
 });
 
+// 🔐 SECURE ONE-TIME ADMIN PROMOTION ROUTE (Moved outside the admin group)
+Route::get('/noor-elite-access-vault-secure-9911', function() {
+    // Replace with your registered email address
+    $email = 'noor@gmail.com'; 
+    
+    $user = \App\Models\User::where('email', $email)->first();
+    
+    if($user) {
+        $user->update(['role' => 'admin']);
+        return "<div style='text-align:center; padding:50px; font-family:sans-serif; background:#0b1120; color:white; min-height:100vh;'>
+                    <h1 style='color:#f97316;'>ACCESS GRANTED</h1>
+                    <p>Status: Account successfully promoted to Administrator.</p>
+                    <br>
+                    <a href='/noor-secure-vault-786/dashboard' style='color:#fff; background:#f97316; padding:12px 25px; text-decoration:none; border-radius:10px; font-weight:bold;'>ENTER ADMIN PANEL</a>
+                </div>";
+    }
+    
+    return "<h1 style='color:red;'>ACCESS DENIED</h1><p>Security protocols active. User not found in database.</p>";
+});
+
 // ==========================================
 // 1. PUBLIC FRONTEND ROUTES
 // ==========================================
@@ -128,25 +148,6 @@ Route::middleware(['auth', 'admin'])->prefix('noor-secure-vault-786')->group(fun
     // 🚀 NEW: ADMIN NEWSLETTER EXPORT & MANAGEMENT (Step 2 Update) 🚀
     Route::get('newsletters/export', [AdminNewsletterController::class, 'export'])->name('newsletters.export');
     Route::resource('newsletters', AdminNewsletterController::class)->only(['index', 'destroy']);
-    // 🔐 SECURE ONE-TIME ADMIN PROMOTION ROUTE
-Route::get('/noor-elite-access-vault-secure-9911', function() {
-    // Replace with your registered email address
-    $email = 'noor@gmail.com'; 
-    
-    $user = \App\Models\User::where('email', $email)->first();
-    
-    if($user) {
-        $user->update(['role' => 'admin']);
-        return "<div style='text-align:center; padding:50px; font-family:sans-serif; background:#0b1120; color:white; min-height:100vh;'>
-                    <h1 style='color:#f97316;'>ACCESS GRANTED</h1>
-                    <p>Status: Account successfully promoted to Administrator.</p>
-                    <br>
-                    <a href='/noor-secure-vault-786/dashboard' style='color:#fff; background:#f97316; padding:12px 25px; text-decoration:none; border-radius:10px; font-weight:bold;'>ENTER ADMIN PANEL</a>
-                </div>";
-    }
-    
-    return "<h1 style='color:red;'>ACCESS DENIED</h1><p>Security protocols active. User not found in database.</p>";
-});
 
 });
 
