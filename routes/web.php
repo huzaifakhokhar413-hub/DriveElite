@@ -18,7 +18,20 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Admin\ContactController as AdminContactController;
 use App\Http\Controllers\ReviewController; 
 use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
-use App\Http\Controllers\Admin\NewsletterController as AdminNewsletterController; // 🚀 Newsletter Import
+use App\Http\Controllers\Admin\NewsletterController as AdminNewsletterController;
+use Illuminate\Support\Facades\Artisan; // 🚀 Added for the fix
+
+// ==========================================
+// 🛠️ THE EMERGENCY DATABASE FIX ROUTE
+// ==========================================
+Route::get('/fix-db', function() {
+    try {
+        Artisan::call('migrate --force');
+        return "<h1>Success!</h1><p>Database tables have been created successfully.</p><a href='/'>Go to Home</a>";
+    } catch (\Exception $e) {
+        return "<h1>Error!</h1><p>" . $e->getMessage() . "</p>";
+    }
+});
 
 // ==========================================
 // 1. PUBLIC FRONTEND ROUTES
