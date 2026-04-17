@@ -19,7 +19,7 @@
             <p class="text-gray-400 text-sm mt-1 uppercase tracking-widest font-bold">Manage your transaction via Admin-Verified Methods</p>
         </div>
 
-        <form action="{{ route('bookings.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('bookings.store.web') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="car_id" value="{{ $car->id }}">
             <input type="hidden" name="start_date" value="{{ $start_date }}">
@@ -251,7 +251,6 @@
                         const isJazz = this.value === 'jazzcash';
                         const color = isJazz ? 'orange' : 'green';
                         
-                        // 🌟 BIG DYNAMIC CSS LOGOS FOR PREVIEW 🌟
                         const bigLogo = isJazz 
                             ? `<div class="w-16 h-16 bg-[#111] rounded-2xl flex items-center justify-center relative overflow-hidden border-2 border-[#ed1c24]/50 shadow-[0_10px_30px_rgba(237,28,36,0.3)] flex-shrink-0">
                                  <div class="absolute -right-4 -top-4 w-12 h-12 bg-[#ed1c24] rounded-full blur-xl opacity-60"></div>
