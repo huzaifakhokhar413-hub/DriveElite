@@ -72,7 +72,7 @@
                     <p class="font-inter text-gray-400 text-sm font-medium leading-relaxed">Access your elite command center.</p>
                 </div>
 
-                <form method="POST" action="{{ route('login') }}" class="space-y-6" id="loginForm">
+                <form method="POST" action="{{ url('/login') }}" class="space-y-6" id="loginForm">
                     @csrf
 
                     <div class="group">

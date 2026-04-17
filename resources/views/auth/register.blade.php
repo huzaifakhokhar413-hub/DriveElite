@@ -200,7 +200,7 @@
     document.addEventListener("DOMContentLoaded", function() {
         var input = document.querySelector("#phone");
         var iti = window.intlTelInput(input, {
-            utilsScript: "https://cdn.intl-tel-input.com/intl-tel-input/js/utils.js",
+            utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/utils.js",
             initialCountry: "pk",
             separateDialCode: true,
             preferredCountries: ["pk", "ae", "sa", "us", "uk"]
