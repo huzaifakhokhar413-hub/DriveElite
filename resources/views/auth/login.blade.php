@@ -72,7 +72,7 @@
                     <p class="font-inter text-gray-400 text-sm font-medium leading-relaxed">Access your elite command center.</p>
                 </div>
 
-                <form method="POST" action="{{ route('login') }}" class="space-y-6">
+                <form method="POST" action="{{ route('login') }}" class="space-y-6" id="loginForm">
                     @csrf
 
                     <div class="group">
@@ -140,6 +140,16 @@
 </div>
 
 <script>
+    // reCAPTCHA Validation for Login Form
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+        var response = grecaptcha.getResponse();
+        if(response.length == 0) {
+            e.preventDefault();
+            alert("Please complete the reCAPTCHA verification to proceed.");
+            return false;
+        }
+    });
+
     @if($errors->any())
         document.addEventListener('DOMContentLoaded', function() {
             Swal.fire({
