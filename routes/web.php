@@ -151,4 +151,17 @@ Route::middleware(['auth', 'admin'])->prefix('noor-secure-vault-786')->group(fun
 
 });
 
+// 🚀 STORAGE LINK EMERGENCY FIX (Added at the end)
+Route::get('/run-storage-link', function() {
+    try {
+        if (file_exists(public_path('storage'))) {
+            @unlink(public_path('storage'));
+        }
+        Artisan::call('storage:link');
+        return "<h1>Success!</h1><p>Storage link has been created successfully.</p>";
+    } catch (\Exception $e) {
+        return "<h1>Error!</h1><p>" . $e->getMessage() . "</p>";
+    }
+});
+
 require __DIR__.'/auth.php';
