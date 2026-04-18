@@ -172,21 +172,4 @@ Route::get('/run-storage-link', function() {
     }
 });
 
-
-Route::get('/mail-test', function () {
-    try {
-        Mail::raw('Noor bhai, yeh aik test email hai Railway server se!', function ($message) {
-            // Yahan apna wo email likhen jis par aap mail receive karna chahte hain
-            $message->to('driveelite099@gmail.com') 
-                    ->subject('Railway SMTP Test');
-        });
-        
-        return 'BINGO! Mail successfully chali gayi hai. Apna inbox check karein!';
-        
-    } catch (\Exception $e) {
-        // Agar Google ne block kiya ya koi error aaya, toh yahan screen par nazar aa jayega
-        return 'MASLA YAHAN HAI: ' . $e->getMessage();
-    }
-});
-
 require __DIR__.'/auth.php';
