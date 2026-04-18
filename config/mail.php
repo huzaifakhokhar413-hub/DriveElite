@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'default' => env('MAIL_MAILER', 'smtp'),
+    'default' => 'smtp', // 🚀 FORCED: Changed from env to direct 'smtp'
 
     /*
     |--------------------------------------------------------------------------
@@ -41,9 +41,9 @@ return [
             'transport' => 'smtp',
             'scheme' => env('MAIL_SCHEME'),
             'url' => env('MAIL_URL'),
-            'host' => env('MAIL_HOST', 'smtp.gmail.com'),
-            'port' => env('MAIL_PORT', 465), 
-            'encryption' => env('MAIL_ENCRYPTION', 'ssl'),
+            'host' => 'smtp.gmail.com', // 🚀 FORCED
+            'port' => 465, // 🚀 FORCED
+            'encryption' => 'ssl', // 🚀 FORCED
             'username' => env('MAIL_USERNAME'),
             'password' => env('MAIL_PASSWORD'),
             'timeout' => null,
