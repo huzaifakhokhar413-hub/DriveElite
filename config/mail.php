@@ -7,55 +7,30 @@ return [
     | Default Mailer
     |--------------------------------------------------------------------------
     */
-
-    'default' => 'smtp', // 🚀 Forced SMTP
+    // 🚀 Ab hum API use kar rahe hain, SMTP nahi
+    'default' => 'resend',
 
     /*
     |--------------------------------------------------------------------------
     | Mailer Configurations
     |--------------------------------------------------------------------------
     */
-
     'mailers' => [
-
-        'smtp' => [
-            'transport' => 'smtp',
-            'scheme' => env('MAIL_SCHEME'),
-            'url' => env('MAIL_URL'),
-            'host' => 'smtp.gmail.com',
-            'port' => 587, // 🚀 Changed to 587 (Universally accepted)
-            'encryption' => 'tls', // 🚀 Changed to TLS
-            'username' => env('MAIL_USERNAME'),
-            'password' => env('MAIL_PASSWORD'),
-            'timeout' => null,
-            'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
-            
-            // 🚀 Security Bypass for Railway
-            'verify_peer' => false,
-            'stream' => [
-                'ssl' => [
-                    'allow_self_signed' => true,
-                    'verify_peer' => false,
-                    'verify_peer_name' => false,
-                ],
-            ],
-        ],
-
-        'ses' => [
-            'transport' => 'ses',
-        ],
-
-        'postmark' => [
-            'transport' => 'postmark',
-        ],
 
         'resend' => [
             'transport' => 'resend',
         ],
 
-        'sendmail' => [
-            'transport' => 'sendmail',
-            'path' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -bs -i'),
+        // SMTP block abhi bhi neeche mojood hai (taake code crash na ho), lekin hum use Resend karenge
+        'smtp' => [
+            'transport' => 'smtp',
+            'host' => env('MAIL_HOST', 'smtp.gmail.com'),
+            'port' => env('MAIL_PORT', 587),
+            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+            'username' => env('MAIL_USERNAME'),
+            'password' => env('MAIL_PASSWORD'),
+            'timeout' => null,
+            'local_domain' => env('MAIL_EHLO_DOMAIN'),
         ],
 
         'log' => [
@@ -66,25 +41,6 @@ return [
         'array' => [
             'transport' => 'array',
         ],
-
-        'failover' => [
-            'transport' => 'failover',
-            'mailers' => [
-                'smtp',
-                'log',
-            ],
-            'retry_after' => 60,
-        ],
-
-        'roundrobin' => [
-            'transport' => 'roundrobin',
-            'mailers' => [
-                'ses',
-                'postmark',
-            ],
-            'retry_after' => 60,
-        ],
-
     ],
 
     /*
@@ -92,10 +48,10 @@ return [
     | Global "From" Address
     |--------------------------------------------------------------------------
     */
-
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'no-reply@driveelite.com'),
-        'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'Drive Elite')),
+        // 🚀 ZAROORI: Jab tak aap custom domain (xyz.com) nahi khareedte, Resend testing ke liye yeh email use karne deta hai
+        'address' => 'onboarding@resend.dev',
+        'name' => 'Drive Elite System',
     ],
 
 ];
