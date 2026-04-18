@@ -177,7 +177,7 @@ Route::get('/mail-test', function () {
     try {
         Mail::raw('Noor bhai, yeh aik test email hai Railway server se!', function ($message) {
             // Yahan apna wo email likhen jis par aap mail receive karna chahte hain
-            $message->to('aapka-email@gmail.com') 
+            $message->to('huzaifakhokhar413email@gmail.com') 
                     ->subject('Railway SMTP Test');
         });
         
