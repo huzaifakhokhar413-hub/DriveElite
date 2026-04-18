@@ -44,15 +44,29 @@
         box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     }
     .stat-box:hover { border-color: rgba(249, 115, 22, 0.3); transform: translateY(-5px); box-shadow: 0 20px 40px rgba(249, 115, 22, 0.1); }
+
+    /* ❓ ELITE FAQ ENGINE */
+    .faq-answer { max-height: 0; opacity: 0; overflow: hidden; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+    .faq-item.active .faq-answer { max-height: 300px; opacity: 1; padding-top: 1rem; }
+    .faq-icon { transition: transform 0.4s ease; }
+    .faq-item.active .faq-icon { transform: rotate(180deg); color: var(--elite-orange); }
+    .faq-item.active .faq-question-text { color: var(--elite-orange); }
+
+    /* 📝 HOW TO BOOK STEP LINES */
+    .step-line { position: absolute; top: 3rem; left: 50%; width: 100%; height: 2px; background: linear-gradient(90deg, var(--elite-orange), transparent); z-index: 0; opacity: 0.3; hidden: true; }
+    @media (min-width: 768px) { .step-line { display: block; } }
 </style>
 
 <div class="relative w-full h-[85vh] flex flex-col items-center justify-center overflow-hidden bg-[#0b1120]">
     <div class="absolute inset-0 z-0">
-        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?auto=format&fit=crop&q=80&w=1920')] bg-cover bg-center opacity-30 transform scale-105"></div>
+        <video autoplay loop muted playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover opacity-40 transform scale-105 pointer-events-none">
+            <source src="{{ asset('videos/bg.mp4') }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
         <div class="absolute inset-0 bg-gradient-to-b from-transparent via-[#0b1120]/80 to-[#0b1120]"></div>
     </div>
     
-    <div class="absolute top-1/4 right-[-10%] w-[600px] h-[600px] hero-glow rounded-full"></div>
+    <div class="absolute top-1/4 right-[-10%] w-[600px] h-[600px] hero-glow rounded-full pointer-events-none"></div>
 
     <div class="relative z-10 text-center px-6 mt-10" data-aos="zoom-out" data-aos-duration="1500">
         <h1 class="font-poppins text-7xl md:text-9xl font-black text-white tracking-tighter italic uppercase leading-[0.85] mb-6">
@@ -161,6 +175,166 @@
     </div>
 </section>
 
+<section class="py-24 bg-[#080d18] relative border-t border-white/5 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-20" data-aos="fade-up">
+            <h4 class="text-orange-500 font-black uppercase tracking-[0.4em] text-[10px] mb-4">A Seamless Experience</h4>
+            <h2 class="text-5xl md:text-6xl font-black text-white italic uppercase tracking-tighter mb-4">How To <span class="text-orange-500">Book.</span></h2>
+            <p class="text-gray-400 text-lg font-light max-w-2xl mx-auto">Reserving your premium vehicle is a streamlined, effortless process designed for your absolute convenience.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative">
+            <div class="relative z-10 text-center" data-aos="fade-up" data-aos-delay="100">
+                <div class="hidden md:block step-line"></div>
+                <div class="w-24 h-24 mx-auto bg-[#0b1120] border-2 border-orange-500 rounded-full flex items-center justify-center text-3xl text-orange-500 mb-6 shadow-[0_0_30px_rgba(249,115,22,0.2)] relative z-20">
+                    <i class="fa-solid fa-car"></i>
+                </div>
+                <h3 class="text-2xl font-black text-white italic uppercase mb-3">01. Explore</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">Browse our exclusive fleet and choose the perfect vehicle that suits your lifestyle and requirements.</p>
+            </div>
+            
+            <div class="relative z-10 text-center mt-8 md:mt-0" data-aos="fade-up" data-aos-delay="200">
+                <div class="hidden md:block step-line"></div>
+                <div class="w-24 h-24 mx-auto bg-[#0b1120] border-2 border-orange-500 rounded-full flex items-center justify-center text-3xl text-orange-500 mb-6 shadow-[0_0_30px_rgba(249,115,22,0.2)] relative z-20">
+                    <i class="fa-solid fa-calendar-check"></i>
+                </div>
+                <h3 class="text-2xl font-black text-white italic uppercase mb-3">02. Schedule</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">Select your desired rental dates, pickup location, and any additional VIP services like a chauffeur.</p>
+            </div>
+
+            <div class="relative z-10 text-center mt-8 md:mt-0" data-aos="fade-up" data-aos-delay="300">
+                <div class="hidden md:block step-line"></div>
+                <div class="w-24 h-24 mx-auto bg-[#0b1120] border-2 border-orange-500 rounded-full flex items-center justify-center text-3xl text-orange-500 mb-6 shadow-[0_0_30px_rgba(249,115,22,0.2)] relative z-20">
+                    <i class="fa-solid fa-shield-check"></i>
+                </div>
+                <h3 class="text-2xl font-black text-white italic uppercase mb-3">03. Secure</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">Complete your reservation securely through our encrypted checkout and await instant confirmation.</p>
+            </div>
+
+            <div class="relative z-10 text-center mt-8 md:mt-0" data-aos="fade-up" data-aos-delay="400">
+                <div class="w-24 h-24 mx-auto bg-[#0b1120] border-2 border-orange-500 rounded-full flex items-center justify-center text-3xl text-orange-500 mb-6 shadow-[0_0_30px_rgba(249,115,22,0.2)] relative z-20">
+                    <i class="fa-solid fa-key"></i>
+                </div>
+                <h3 class="text-2xl font-black text-white italic uppercase mb-3">04. Command</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">Receive your pristine vehicle at your doorstep. Step in, relax, and command your extraordinary journey.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-24 bg-[#0b1120] relative border-t border-white/5">
+    <div class="max-w-4xl mx-auto px-6">
+        <div class="text-center mb-16" data-aos="fade-up">
+            <h4 class="text-orange-500 font-black uppercase tracking-[0.4em] text-[10px] mb-4">Clear Your Doubts</h4>
+            <h2 class="text-5xl font-black text-white italic uppercase tracking-tighter mb-4">Frequently Asked <span class="text-orange-500">Questions.</span></h2>
+            <p class="text-gray-400 text-lg font-light">Everything you need to know about our premium car rental service.</p>
+        </div>
+        
+        <div class="space-y-4">
+            <div class="faq-item glass-card rounded-3xl p-6 cursor-pointer" data-aos="fade-up" data-aos-delay="100" onclick="toggleFAQ(this)">
+                <div class="flex justify-between items-center">
+                    <h3 class="faq-question-text text-xl font-bold text-white transition-colors">1. Do you provide professional chauffeurs?</h3>
+                    <i class="fa-solid fa-chevron-down text-gray-500 faq-icon text-xl"></i>
+                </div>
+                <div class="faq-answer">
+                    <p class="text-gray-400 leading-relaxed font-light border-t border-white/10 mt-2 pt-4">Absolutely. We offer highly trained, discreet, and professional chauffeurs for our entire luxury fleet, ensuring a seamless and elite travel experience.</p>
+                </div>
+            </div>
+
+            <div class="faq-item glass-card rounded-3xl p-6 cursor-pointer" data-aos="fade-up" data-aos-delay="150" onclick="toggleFAQ(this)">
+                <div class="flex justify-between items-center">
+                    <h3 class="faq-question-text text-xl font-bold text-white transition-colors">2. How does the VIP delivery process work?</h3>
+                    <i class="fa-solid fa-chevron-down text-gray-500 faq-icon text-xl"></i>
+                </div>
+                <div class="faq-answer">
+                    <p class="text-gray-400 leading-relaxed font-light border-t border-white/10 mt-2 pt-4">We deliver directly to your specified location—whether it's an airport terminal, luxury hotel, or private residence. The vehicle arrives fully detailed and ready for departure.</p>
+                </div>
+            </div>
+
+            <div class="faq-item glass-card rounded-3xl p-6 cursor-pointer" data-aos="fade-up" data-aos-delay="200" onclick="toggleFAQ(this)">
+                <div class="flex justify-between items-center">
+                    <h3 class="faq-question-text text-xl font-bold text-white transition-colors">3. What documents are required to book a car?</h3>
+                    <i class="fa-solid fa-chevron-down text-gray-500 faq-icon text-xl"></i>
+                </div>
+                <div class="faq-answer">
+                    <p class="text-gray-400 leading-relaxed font-light border-t border-white/10 mt-2 pt-4">You will need a valid National Identity Card (CNIC) or Passport, a valid Driving License (if driving yourself), and a standard security deposit.</p>
+                </div>
+            </div>
+
+            <div class="faq-item glass-card rounded-3xl p-6 cursor-pointer" data-aos="fade-up" data-aos-delay="250" onclick="toggleFAQ(this)">
+                <div class="flex justify-between items-center">
+                    <h3 class="faq-question-text text-xl font-bold text-white transition-colors">4. What is the required security deposit?</h3>
+                    <i class="fa-solid fa-chevron-down text-gray-500 faq-icon text-xl"></i>
+                </div>
+                <div class="faq-answer">
+                    <p class="text-gray-400 leading-relaxed font-light border-t border-white/10 mt-2 pt-4">Security deposits vary based on the vehicle class (e.g., Premium SUVs vs Executive Sedans). The deposit is fully transparent and promptly refunded upon the safe return of the vehicle.</p>
+                </div>
+            </div>
+
+            <div class="faq-item glass-card rounded-3xl p-6 cursor-pointer" data-aos="fade-up" data-aos-delay="300" onclick="toggleFAQ(this)">
+                <div class="flex justify-between items-center">
+                    <h3 class="faq-question-text text-xl font-bold text-white transition-colors">5. Are the vehicles fully insured?</h3>
+                    <i class="fa-solid fa-chevron-down text-gray-500 faq-icon text-xl"></i>
+                </div>
+                <div class="faq-answer">
+                    <p class="text-gray-400 leading-relaxed font-light border-t border-white/10 mt-2 pt-4">Yes, every vehicle in the Drive Elite fleet is backed by comprehensive premium insurance, giving you absolute peace of mind during your journey.</p>
+                </div>
+            </div>
+
+            <div class="faq-item glass-card rounded-3xl p-6 cursor-pointer" data-aos="fade-up" data-aos-delay="350" onclick="toggleFAQ(this)">
+                <div class="flex justify-between items-center">
+                    <h3 class="faq-question-text text-xl font-bold text-white transition-colors">6. Is there any daily mileage limit?</h3>
+                    <i class="fa-solid fa-chevron-down text-gray-500 faq-icon text-xl"></i>
+                </div>
+                <div class="faq-answer">
+                    <p class="text-gray-400 leading-relaxed font-light border-t border-white/10 mt-2 pt-4">Our rentals come with a generous daily mileage allowance. If you plan a cross-country trip, unlimited mileage packages can be arranged upon special request.</p>
+                </div>
+            </div>
+
+            <div class="faq-item glass-card rounded-3xl p-6 cursor-pointer" data-aos="fade-up" data-aos-delay="400" onclick="toggleFAQ(this)">
+                <div class="flex justify-between items-center">
+                    <h3 class="faq-question-text text-xl font-bold text-white transition-colors">7. Can I rent a car for a wedding or special event?</h3>
+                    <i class="fa-solid fa-chevron-down text-gray-500 faq-icon text-xl"></i>
+                </div>
+                <div class="faq-answer">
+                    <p class="text-gray-400 leading-relaxed font-light border-t border-white/10 mt-2 pt-4">Absolutely. We offer specialized Elite Event Packages that include pristine detailing, ribbon/floral arrangements, and a smartly dressed chauffeur for your big day.</p>
+                </div>
+            </div>
+
+            <div class="faq-item glass-card rounded-3xl p-6 cursor-pointer" data-aos="fade-up" data-aos-delay="450" onclick="toggleFAQ(this)">
+                <div class="flex justify-between items-center">
+                    <h3 class="faq-question-text text-xl font-bold text-white transition-colors">8. Do you allow inter-city travel?</h3>
+                    <i class="fa-solid fa-chevron-down text-gray-500 faq-icon text-xl"></i>
+                </div>
+                <div class="faq-answer">
+                    <p class="text-gray-400 leading-relaxed font-light border-t border-white/10 mt-2 pt-4">Yes, our fleet is fully permitted for nationwide travel. Whether you are traveling from Lahore to Islamabad or heading to the Northern areas, Drive Elite is ready.</p>
+                </div>
+            </div>
+
+            <div class="faq-item glass-card rounded-3xl p-6 cursor-pointer" data-aos="fade-up" data-aos-delay="500" onclick="toggleFAQ(this)">
+                <div class="flex justify-between items-center">
+                    <h3 class="faq-question-text text-xl font-bold text-white transition-colors">9. What is your cancellation policy?</h3>
+                    <i class="fa-solid fa-chevron-down text-gray-500 faq-icon text-xl"></i>
+                </div>
+                <div class="faq-answer">
+                    <p class="text-gray-400 leading-relaxed font-light border-t border-white/10 mt-2 pt-4">You can cancel your reservation free of charge up to 24 hours before your scheduled pickup time. Late cancellations may incur a nominal processing fee.</p>
+                </div>
+            </div>
+
+            <div class="faq-item glass-card rounded-3xl p-6 cursor-pointer" data-aos="fade-up" data-aos-delay="550" onclick="toggleFAQ(this)">
+                <div class="flex justify-between items-center">
+                    <h3 class="faq-question-text text-xl font-bold text-white transition-colors">10. What happens in case of a breakdown?</h3>
+                    <i class="fa-solid fa-chevron-down text-gray-500 faq-icon text-xl"></i>
+                </div>
+                <div class="faq-answer">
+                    <p class="text-gray-400 leading-relaxed font-light border-t border-white/10 mt-2 pt-4">Our vehicles are impeccably maintained, but in the rare event of a mechanical issue, we provide 24/7 priority roadside assistance and an immediate replacement vehicle.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
 <section class="py-32 bg-[#f8fafc]">
     <div class="max-w-6xl mx-auto px-6" data-aos="zoom-in">
         <div class="bg-[#0b1120] p-16 md:p-24 rounded-[4rem] relative overflow-hidden shadow-[0_40px_80px_-20px_rgba(0,0,0,0.5)] text-center">
@@ -179,6 +353,20 @@
     document.addEventListener('DOMContentLoaded', function() {
         AOS.init({ duration: 1000, once: true, offset: 50 });
     });
+
+    // 🌟 FAQ Toggle Logic 🌟
+    function toggleFAQ(element) {
+        const isActive = element.classList.contains('active');
+        const allItems = document.querySelectorAll('.faq-item');
+        
+        allItems.forEach(item => {
+            item.classList.remove('active');
+        });
+
+        if (!isActive) {
+            element.classList.add('active');
+        }
+    }
 </script>
 
 @endsection

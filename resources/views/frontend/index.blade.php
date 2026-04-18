@@ -41,9 +41,10 @@
 
 <div class="relative w-full min-h-screen flex items-center justify-center overflow-hidden bg-[#0b1120]">
     <div class="absolute inset-0 z-0">
-        <img src="https://quickdrive.ae/uploads/200.jpg" 
-             class="absolute inset-0 w-full h-full object-cover opacity-80" 
-             alt="Luxury Cars Fleet Background">
+        <video autoplay loop muted playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover opacity-40 transform scale-105 pointer-events-none">
+            <source src="{{ asset('videos/bm.mp4') }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
         <div class="absolute inset-0 bg-gradient-to-r from-transparent via-[#0b1120]/30 to-transparent"></div>
         <div class="absolute inset-0 bg-gradient-to-l from-[#0b1120]/30 via-[#0b1120]/30 to-transparent"></div>
         <div class="absolute inset-0 bg-gradient-to-t from-[#0b1120] via-transparent to-transparent"></div>
