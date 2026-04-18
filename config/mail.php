@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'default' => env('MAIL_MAILER', 'smtp'), // 🚀 Change 'log' to 'smtp' as default
+    'default' => env('MAIL_MAILER', 'smtp'),
 
     /*
     |--------------------------------------------------------------------------
@@ -42,13 +42,15 @@ return [
             'scheme' => env('MAIL_SCHEME'),
             'url' => env('MAIL_URL'),
             'host' => env('MAIL_HOST', 'smtp.gmail.com'),
-            'port' => env('MAIL_PORT', 465), // 🚀 Default for SSL
-            'encryption' => env('MAIL_ENCRYPTION', 'ssl'), // 🚀 Added for Gmail
+            'port' => env('MAIL_PORT', 465), 
+            'encryption' => env('MAIL_ENCRYPTION', 'ssl'),
             'username' => env('MAIL_USERNAME'),
             'password' => env('MAIL_PASSWORD'),
             'timeout' => null,
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
-            // 🚀 Added Stream for secure handshake with Google
+            
+            // 🚀 Force SSL connection settings for Production/Railway
+            'verify_peer' => false,
             'stream' => [
                 'ssl' => [
                     'allow_self_signed' => true,
@@ -116,7 +118,7 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
+        'address' => env('MAIL_FROM_ADDRESS', 'no-reply@driveelite.com'),
         'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'Drive Elite')),
     ],
 
