@@ -20,6 +20,7 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
 use App\Http\Controllers\Admin\NewsletterController as AdminNewsletterController;
 use Illuminate\Support\Facades\Artisan; // 🚀 Added for the fix
+use Illuminate\Support\Facades\Mail;
 
 // ==========================================
 // 🛠️ THE EMERGENCY DATABASE FIX ROUTE
@@ -168,6 +169,23 @@ Route::get('/run-storage-link', function() {
         return "<h1>Success!</h1><p>Storage linked and System Cache cleared successfully.</p><a href='/'>Go to Home</a>";
     } catch (\Exception $e) {
         return "<h1>Error!</h1><p>" . $e->getMessage() . "</p>";
+    }
+});
+
+
+Route::get('/mail-test', function () {
+    try {
+        Mail::raw('Noor bhai, yeh aik test email hai Railway server se!', function ($message) {
+            // Yahan apna wo email likhen jis par aap mail receive karna chahte hain
+            $message->to('aapka-email@gmail.com') 
+                    ->subject('Railway SMTP Test');
+        });
+        
+        return 'BINGO! Mail successfully chali gayi hai. Apna inbox check karein!';
+        
+    } catch (\Exception $e) {
+        // Agar Google ne block kiya ya koi error aaya, toh yahan screen par nazar aa jayega
+        return 'MASLA YAHAN HAI: ' . $e->getMessage();
     }
 });
 
