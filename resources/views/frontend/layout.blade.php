@@ -1,3 +1,9 @@
+@php
+    // 🚀 BULLETPROOF FIX: Agar variable khali hai toh zabardasti DB se uthao
+    if (empty($settings)) {
+        $settings = \App\Models\Setting::first(); 
+    }
+@endphp
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
@@ -5,6 +11,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'DriveElite Rentals') - Premium Car Rentals</title>
     
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/741/741407.png">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@400;500;700;800;900&display=swap" rel="stylesheet">
@@ -37,12 +45,26 @@
             50% { text-shadow: 0 0 30px rgba(249, 115, 22, 0.7); opacity: 0.8; transform: scale(1.02); }
         }
         .animate-branding { animation: branding-glow 4s ease-in-out infinite; }
+
+        /* 🚀 PAGE UP/DOWN BUTTONS (FIXED AT RIGHT MID) 🚀 */
+        .scroll-controls { position: fixed; right: 20px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 10px; z-index: 100; }
+        .scroll-btn { width: 40px; height: 40px; background: #0f172a; color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; transition: all 0.3s ease; border: 1px solid rgba(249, 115, 22, 0.3); opacity: 0.7; }
+        .scroll-btn:hover { background: #f97316; opacity: 1; transform: translateX(-5px); box-shadow: 0 5px 15px rgba(249, 115, 22, 0.4); }
+
+        /* 🚀 MOBILE MENU ANIMATION */
+        #mobile-menu { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); transform: translateY(-100%); opacity: 0; pointer-events: none; }
+        #mobile-menu.active { transform: translateY(0); opacity: 1; pointer-events: auto; }
     </style>
 </head>
 <body class="text-gray-800 antialiased selection:bg-orange-500 selection:text-white flex flex-col min-h-screen">
 
-    <nav id="navbar" class="fixed top-0 w-full z-50 border-b border-gray-100 transition-all duration-300 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center">
+    <div class="scroll-controls">
+        <div class="scroll-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Go to Top"><i class="fa-solid fa-chevron-up"></i></div>
+        <div class="scroll-btn" onclick="window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'})" title="Go to Bottom"><i class="fa-solid fa-chevron-down"></i></div>
+    </div>
+
+    <nav id="navbar" class="fixed top-0 w-full z-[100] border-b border-gray-100 transition-all duration-300 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center bg-white relative z-50">
             <a href="{{ route('home') }}" class="font-poppins text-2xl font-black text-blue-950 tracking-tight group flex items-center gap-2">
                 <i class="fa-solid fa-car-side text-orange-500 group-hover:scale-110 transition-transform"></i>
                 <div>Drive<span class="text-orange-500 group-hover:text-orange-600 transition-colors">Elite.</span></div>
@@ -52,21 +74,47 @@
                 <a href="{{ route('home') }}" class="hover:text-orange-500 transition-colors duration-300">Home</a>
                 <a href="{{ route('fleet') }}" class="hover:text-orange-500 transition-colors duration-300">Our Fleet</a>
                 <a href="{{ route('about') }}" class="hover:text-orange-500 transition-colors duration-300">About Us</a>
+                <a href="{{ route('services') }}" class="hover:text-orange-500 transition-colors duration-300">Services</a>
                 <a href="{{ route('contact') }}" class="hover:text-orange-500 transition-colors duration-300">Contact Us</a>
             </div>
 
             <div class="flex items-center gap-4">
+                <div class="hidden md:flex items-center gap-4">
+                    @auth
+                        <a href="{{ route('dashboard') }}" class="font-poppins bg-blue-950 text-white px-6 py-2.5 rounded-lg text-sm font-semibold hover:bg-blue-900 transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                            My Dashboard
+                        </a>
+                    @else
+                        <a href="{{ route('login') }}" class="flex items-center gap-2 font-bold text-sm text-gray-600 hover:text-blue-950 transition-colors">
+                            <i class="fa-regular fa-user text-lg"></i> Log In
+                        </a>
+                        <a href="{{ route('register') }}" class="font-poppins bg-orange-500 text-white px-6 py-2.5 rounded-lg text-sm font-bold hover:bg-orange-600 transition-all shadow-[0_4px_15px_rgba(249,115,22,0.4)] transform hover:-translate-y-0.5">
+                            Sign Up
+                        </a>
+                    @endauth
+                </div>
+
+                <button id="menu-toggle" class="md:hidden text-blue-950 text-2xl focus:outline-none p-2">
+                    <i class="fa-solid fa-bars-staggered"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="mobile-menu" class="absolute top-20 left-0 w-full bg-white z-40 flex flex-col p-6 space-y-6 md:hidden border-b border-gray-100 shadow-xl pb-10">
+            <div class="flex flex-col gap-4 text-center">
+                <a href="{{ route('home') }}" class="text-lg font-bold text-blue-950 py-3 border-b border-gray-50 uppercase">Home</a>
+                <a href="{{ route('fleet') }}" class="text-lg font-bold text-blue-950 py-3 border-b border-gray-50 uppercase">Our Fleet</a>
+                <a href="{{ route('about') }}" class="text-lg font-bold text-blue-950 py-3 border-b border-gray-50 uppercase">About Us</a>
+                <a href="{{ route('services') }}" class="text-lg font-bold text-blue-950 py-3 border-b border-gray-50 uppercase">Services</a>
+                <a href="{{ route('contact') }}" class="text-lg font-bold text-blue-950 py-3 border-b border-gray-50 uppercase">Contact Us</a>
+            </div>
+            
+            <div class="flex flex-col gap-4 mt-4">
                 @auth
-                    <a href="{{ route('dashboard') }}" class="font-poppins bg-blue-950 text-white px-6 py-2.5 rounded-lg text-sm font-semibold hover:bg-blue-900 transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
-                        My Dashboard
-                    </a>
+                    <a href="{{ route('dashboard') }}" class="bg-blue-950 text-white py-4 rounded-xl text-center font-bold uppercase tracking-widest">My Dashboard</a>
                 @else
-                    <a href="{{ route('login') }}" class="hidden md:flex items-center gap-2 font-bold text-sm text-gray-600 hover:text-blue-950 transition-colors">
-                        <i class="fa-regular fa-user text-lg"></i> Log In
-                    </a>
-                    <a href="{{ route('register') }}" class="font-poppins bg-orange-500 text-white px-6 py-2.5 rounded-lg text-sm font-bold hover:bg-orange-600 transition-all shadow-[0_4px_15px_rgba(249,115,22,0.4)] transform hover:-translate-y-0.5">
-                        Sign Up
-                    </a>
+                    <a href="{{ route('login') }}" class="border-2 border-blue-950 text-blue-950 py-4 rounded-xl text-center font-bold uppercase tracking-widest"><i class="fa-regular fa-user mr-2"></i> Log In</a>
+                    <a href="{{ route('register') }}" class="bg-orange-500 text-white py-4 rounded-xl text-center font-bold shadow-lg uppercase tracking-widest">Sign Up Now</a>
                 @endauth
             </div>
         </div>
@@ -114,6 +162,7 @@
                 <ul class="space-y-4 text-sm text-gray-400 font-medium">
                     <li><a href="{{ route('about') }}" class="hover:text-orange-500 hover:translate-x-1 inline-block transition-all duration-300">About Us</a></li>
                     <li><a href="{{ route('fleet') }}" class="hover:text-orange-500 hover:translate-x-1 inline-block transition-all duration-300">Our Fleet</a></li>
+                    <li><a href="{{ route('services') }}" class="hover:text-orange-500 hover:translate-x-1 inline-block transition-all duration-300">Services</a></li>
                     <li><a href="{{ route('contact') }}" class="hover:text-orange-500 hover:translate-x-1 inline-block transition-all duration-300">Contact Us</a></li>
                 </ul>
             </div>
@@ -160,7 +209,7 @@
             
             <div class="mb-6" data-aos="zoom-in">
                 <h2 class="font-poppins text-2xl md:text-4xl font-black tracking-[0.25em] uppercase italic transition-all duration-500 hover:tracking-[0.35em] inline-block animate-branding">
-                    <span class="text-white">NOOR</span> <span class="text-orange-500">NOSHAD</span>
+                    <span class="text-white">NN</span> <span class="text-orange-500">DEVELOPERS</span>
                 </h2>
             </div>
 
@@ -185,58 +234,36 @@
     </footer>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize AOS
-            AOS.init({
-                duration: 1000,
-                once: true,
-                mirror: false,
-                offset: 50
-            });
+        // 🚀 MOBILE MENU TOGGLE SCRIPT
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = menuToggle.querySelector('i');
 
-            // ✅ SUCCESS NOTIFICATION
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+            if(mobileMenu.classList.contains('active')) {
+                menuIcon.classList.remove('fa-bars-staggered');
+                menuIcon.classList.add('fa-xmark');
+            } else {
+                menuIcon.classList.remove('fa-xmark');
+                menuIcon.classList.add('fa-bars-staggered');
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            AOS.init({ duration: 1000, once: true, mirror: false, offset: 50 });
+
             @if(session('success'))
                 Swal.fire({
-                    html: `
-                        <div class="flex flex-col items-center p-4">
-                            <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-orange-400 to-orange-600 flex items-center justify-center mb-6 shadow-[0_0_50px_rgba(249,115,22,0.6)] animate__animated animate__pulse animate__infinite">
-                                <i class="fa-solid fa-check text-white text-4xl"></i>
-                            </div>
-                            <h2 class="font-poppins text-2xl font-black text-white tracking-widest uppercase mb-3 drop-shadow-lg">Success</h2>
-                            <p class="font-inter text-gray-300 text-base leading-relaxed text-center px-2">{!! session('success') !!}</p>
-                        </div>
-                    `,
-                    background: 'rgba(11, 17, 32, 0.85)', 
-                    backdrop: `rgba(0,0,0,0.8) backdrop-filter: blur(10px)`, 
-                    showConfirmButton: false,
-                    timer: 5000,
-                    timerProgressBar: true,
-                    customClass: { popup: 'premium-swal-popup rounded-[2rem]' },
-                    showClass: { popup: 'animate__animated animate__fadeInDown' },
-                    hideClass: { popup: 'animate__animated animate__zoomOut' }
+                    html: `<div class="flex flex-col items-center p-4"><div class="w-20 h-20 rounded-full bg-gradient-to-tr from-orange-400 to-orange-600 flex items-center justify-center mb-6 shadow-[0_0_50px_rgba(249,115,22,0.6)] animate__animated animate__pulse animate__infinite"><i class="fa-solid fa-check text-white text-4xl"></i></div><h2 class="font-poppins text-2xl font-black text-white tracking-widest uppercase mb-3 drop-shadow-lg">Success</h2><p class="font-inter text-gray-300 text-base leading-relaxed text-center px-2">{!! session('success') !!}</p></div>`,
+                    background: 'rgba(11, 17, 32, 0.85)', backdrop: `rgba(0,0,0,0.8) backdrop-filter: blur(10px)`, showConfirmButton: false, timer: 5000, timerProgressBar: true, customClass: { popup: 'premium-swal-popup rounded-[2rem]' }, showClass: { popup: 'animate__animated animate__fadeInDown' }, hideClass: { popup: 'animate__animated animate__zoomOut' }
                 });
             @endif
 
-            // ✅ ERROR / VALIDATION NOTIFICATION
             @if($errors->any())
                 Swal.fire({
-                    html: `
-                        <div class="flex flex-col items-center p-4">
-                            <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-red-500 to-red-700 flex items-center justify-center mb-6 shadow-[0_0_50px_rgba(220,38,38,0.6)] animate__animated animate__headShake">
-                                <i class="fa-solid fa-triangle-exclamation text-white text-4xl"></i>
-                            </div>
-                            <h2 class="font-poppins text-2xl font-black text-white tracking-widest uppercase mb-3 drop-shadow-lg">Notice</h2>
-                            <p class="font-inter text-gray-300 text-base leading-relaxed text-center px-2">{{ $errors->first() }}</p>
-                        </div>
-                    `,
-                    background: 'rgba(11, 17, 32, 0.85)',
-                    backdrop: `rgba(0,0,0,0.8) backdrop-filter: blur(10px)`,
-                    showConfirmButton: true,
-                    confirmButtonText: 'Try Again',
-                    confirmButtonColor: '#f97316',
-                    customClass: { popup: 'premium-swal-popup rounded-[2rem]' },
-                    showClass: { popup: 'animate__animated animate__fadeInDown' },
-                    hideClass: { popup: 'animate__animated animate__zoomOut' }
+                    html: `<div class="flex flex-col items-center p-4"><div class="w-20 h-20 rounded-full bg-gradient-to-tr from-red-500 to-red-700 flex items-center justify-center mb-6 shadow-[0_0_50px_rgba(220,38,38,0.6)] animate__animated animate__headShake"><i class="fa-solid fa-triangle-exclamation text-white text-4xl"></i></div><h2 class="font-poppins text-2xl font-black text-white tracking-widest uppercase mb-3 drop-shadow-lg">Notice</h2><p class="font-inter text-gray-300 text-base leading-relaxed text-center px-2">{{ $errors->first() }}</p></div>`,
+                    background: 'rgba(11, 17, 32, 0.85)', backdrop: `rgba(0,0,0,0.8) backdrop-filter: blur(10px)`, showConfirmButton: true, confirmButtonText: 'Try Again', confirmButtonColor: '#f97316', customClass: { popup: 'premium-swal-popup rounded-[2rem]' }, showClass: { popup: 'animate__animated animate__fadeInDown' }, hideClass: { popup: 'animate__animated animate__zoomOut' }
                 });
             @endif
         });

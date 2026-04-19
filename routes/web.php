@@ -62,6 +62,9 @@ Route::get('/our-fleet', [FrontendController::class, 'fleet'])->name('fleet');
 Route::get('/car-details/{car}', [FrontendController::class, 'showCar'])->name('car.show');
 Route::get('/about', [FrontendController::class, 'about'])->name('about');
 
+// 🚀 NEW: SERVICES PAGE ROUTE (Assessment Requirement)
+Route::get('/services', [FrontendController::class, 'services'])->name('services');
+
 // 🌟 THE NEW CONTACT ENGINE ROUTES 🌟
 Route::get('/contact', [ContactController::class, 'index'])->name('contact'); 
 Route::post('/contact-submit', [ContactController::class, 'store'])->name('contact.store'); 

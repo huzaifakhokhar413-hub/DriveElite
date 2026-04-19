@@ -12,7 +12,7 @@ class FrontendController extends Controller
 {
     public function index()
     {
-        // Settings load kar rahay hain taake Navbar aur Footer dynamic rahay
+        // Load settings to keep Navbar and Footer dynamic
         $settings = Setting::pluck('value', 'key')->toArray();
         
         // 🌟 PROFESSIONAL UPDATE: Homepage Pagination & No Status Limit
@@ -24,30 +24,40 @@ class FrontendController extends Controller
     // 🌟 THE ELITE SEARCH ENGINE 🌟
     public function fleet(Request $request)
     {
-        // Settings load karein
+        // Load settings
         $settings = Setting::pluck('value', 'key')->toArray();
 
         $query = Car::with('category');
 
-        // 🧠 LOGIC 1: Agar City select ki hai
+        // 🧠 LOGIC 1: Filter by City/Location
         if ($request->filled('location') && $request->location !== 'Global Coverage') {
             $query->where('city', $request->location);
         }
 
-        // 🧠 LOGIC 2: Agar Vehicle Class (Category) select ki hai
+        // 🧠 LOGIC 2: Filter by Vehicle Class (Category)
         if ($request->filled('category')) {
             $query->whereHas('category', function($q) use ($request) {
                 $q->where('name', 'LIKE', '%' . $request->category . '%'); 
             });
         }
 
-        // Results nikalo aur paginate kar do
+        // 🧠 LOGIC 3: Filter by Selected Brand (New Search Logic)
+        if ($request->filled('search')) {
+            $query->where('brand', $request->search);
+        }
+
+        // 🧠 LOGIC 4: Filter by Maximum Budget (New Price Logic)
+        if ($request->filled('max_price')) {
+            $query->where('daily_rent', '<=', $request->max_price);
+        }
+
+        // Get results and paginate
         $cars = $query->latest()->paginate(9);
 
         return view('frontend.fleet', compact('settings', 'cars'));
     }
 
-    // Gari ki mukammal detail dikhane ke liye
+    // Show complete details of a single car
     public function showCar(Car $car)
     {
         $settings = Setting::pluck('value', 'key')->toArray();
@@ -62,25 +72,30 @@ class FrontendController extends Controller
         $settings = Setting::pluck('value', 'key')->toArray();
         return view('frontend.about', compact('settings'));
     }
+    public function services()
+{
+    $settings = Setting::pluck('value', 'key')->toArray();
+    return view('frontend.services', compact('settings'));
+}
 
     /**
      * 🚀 NEWSLETTER SUBSCRIPTION LOGIC (Step 2)
      */
     public function subscribe(Request $request)
-{
-    $request->validate([
-        'email' => 'required|email|unique:newsletters,email',
-    ], [
-        // ✅ English Messages (Professional Standard)
-        'email.unique' => 'You are already subscribed to our newsletter.',
-        'email.email' => 'Please enter a valid email address.'
-    ]);
+    {
+        $request->validate([
+            'email' => 'required|email|unique:newsletters,email',
+        ], [
+            // ✅ English Messages (Professional Standard)
+            'email.unique' => 'You are already subscribed to our newsletter.',
+            'email.email' => 'Please enter a valid email address.'
+        ]);
 
-    Newsletter::create([
-        'email' => $request->email
-    ]);
+        Newsletter::create([
+            'email' => $request->email
+        ]);
 
-    // ✅ Professional Success Message
-    return back()->with('success', 'Thank you! You have successfully subscribed to our newsletter.');
-}
+        // ✅ Professional Success Message
+        return back()->with('success', 'Thank you! You have successfully subscribed to our newsletter.');
+    }
 }

@@ -75,6 +75,28 @@
                 <h3 class="font-poppins text-2xl font-black text-white italic uppercase mb-8">Reserve Ride</h3>
                 
                 <form action="{{ route('fleet') }}" method="GET" class="space-y-5">
+                    
+                    <div class="group relative">
+                        <label class="block text-[10px] font-black text-orange-500 uppercase tracking-[0.3em] mb-2 ml-2">Choose Brand</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-tags absolute left-5 top-4 text-gray-400 group-hover:text-orange-500 transition-colors"></i>
+                            <select name="search" class="input-elite w-full rounded-2xl py-3.5 pl-12 pr-4 outline-none font-inter text-sm font-semibold appearance-none cursor-pointer">
+                                <option value="" class="bg-[#0b1120] text-gray-400">All Brands</option>
+                                @php
+                                    try {
+                                        $brands = \App\Models\Car::select('brand')->distinct()->whereNotNull('brand')->pluck('brand');
+                                    } catch(\Exception $e) {
+                                        $brands = collect([]);
+                                    }
+                                @endphp
+                                @foreach($brands as $brand)
+                                    <option value="{{ $brand }}" class="bg-[#0b1120] text-white">{{ $brand }}</option>
+                                @endforeach
+                            </select>
+                            <i class="fa-solid fa-chevron-down absolute right-5 top-4 text-gray-500 pointer-events-none text-xs"></i>
+                        </div>
+                    </div>
+
                     <div class="group relative">
                         <label class="block text-[10px] font-black text-orange-500 uppercase tracking-[0.3em] mb-2 ml-2">Pickup Territory</label>
                         <div class="relative">
@@ -104,20 +126,9 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="group">
-                            <label class="block text-[10px] font-black text-orange-500 uppercase tracking-[0.3em] mb-2 ml-2">Departure</label>
-                            <input type="datetime-local" name="pickup_date" class="input-elite color-scheme-dark w-full rounded-2xl py-3.5 px-4 text-xs outline-none">
-                        </div>
-                        <div class="group">
-                            <label class="block text-[10px] font-black text-orange-500 uppercase tracking-[0.3em] mb-2 ml-2">Return</label>
-                            <input type="datetime-local" name="return_date" class="input-elite color-scheme-dark w-full rounded-2xl py-3.5 px-4 text-xs outline-none">
-                        </div>
-                    </div>
-
                     <button type="submit" class="group w-full bg-white text-[#0b1120] font-black py-5 rounded-2xl hover:bg-orange-500 hover:text-white transition-all shadow-xl uppercase text-xs tracking-[0.3em] italic overflow-hidden relative mt-2">
                         <span class="relative z-10 flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-sliders"></i> Initialize Search
+                            <i class="fa-solid fa-magnifying-glass"></i> Initialize Search
                         </span>
                         <div class="absolute inset-0 bg-orange-600 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
                     </button>
@@ -167,14 +178,20 @@
 
 <section class="py-32 bg-[#f8fafc]">
     <div class="max-w-7xl mx-auto px-6">
-        <div class="flex flex-col md:flex-row justify-between items-center mb-20">
+        
+        <div class="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
             <h4 class="font-poppins text-5xl font-black text-[#0b1120] italic tracking-tighter uppercase">Featured <span class="text-orange-500">Showroom.</span></h4>
             <a href="{{ route('fleet') }}" class="bg-[#0b1120] text-white px-12 py-5 rounded-2xl font-black text-[10px] uppercase tracking-[0.4em] hover:bg-orange-500 transition-all shadow-xl">The Full Collection</a>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+        <div class="mb-12 relative w-full md:w-1/2">
+            <i class="fa-solid fa-magnifying-glass absolute left-6 top-5 text-gray-400"></i>
+            <input type="text" id="liveSearchInput" onkeyup="filterFeaturedCars()" placeholder="Search displayed cars (e.g. Audi, BMW)..." class="w-full bg-white border border-gray-200 text-gray-800 rounded-[2rem] py-4 pl-14 pr-6 outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all shadow-sm font-medium">
+        </div>
+
+        <div id="featuredCarsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
             @forelse($featured_cars as $car)
-            <div class="group bg-white rounded-[3.5rem] p-5 shadow-sm hover:shadow-[0_50px_100px_-20px_rgba(0,0,0,0.1)] transition-all" data-aos="fade-up" data-tilt data-tilt-max="4">
+            <div class="car-item-card group bg-white rounded-[3.5rem] p-5 shadow-sm hover:shadow-[0_50px_100px_-20px_rgba(0,0,0,0.1)] transition-all" data-aos="fade-up" data-tilt data-tilt-max="4">
                 <div class="relative h-80 overflow-hidden rounded-[3rem] bg-gray-100">
                     <img src="{{ asset('storage/' . $car->image) }}" class="w-full h-full object-cover group-hover:scale-110 transition duration-1000">
                     
@@ -192,7 +209,9 @@
                 </div>
                 <div class="p-8">
                     <p class="text-[10px] font-black text-orange-500 uppercase tracking-[0.3em] mb-3 italic">{{ $car->category->name ?? 'Luxury' }}</p>
-                    <h5 class="text-3xl font-black text-[#0b1120] leading-tight mb-8 uppercase italic">{{ $car->brand }} <span class="text-gray-400">{{ $car->model_name }}</span></h5>
+                    
+                    <h5 class="car-title text-3xl font-black text-[#0b1120] leading-tight mb-8 uppercase italic">{{ $car->brand }} <span class="text-gray-400">{{ $car->model_name }}</span></h5>
+                    
                     <div class="grid grid-cols-3 gap-4 mb-10 text-center">
                         <div class="py-4 bg-gray-50 rounded-3xl group-hover:bg-orange-50 transition-colors"><i class="fa-solid fa-chair text-gray-300 group-hover:text-orange-500 mb-2"></i><p class="text-[9px] font-black">{{ $car->seats }} SEATS</p></div>
                         <div class="py-4 bg-gray-50 rounded-3xl group-hover:bg-orange-50 transition-colors"><i class="fa-solid fa-gear text-gray-300 group-hover:text-orange-500 mb-2"></i><p class="text-[9px] font-black uppercase">{{ substr($car->transmission,0,4) }}</p></div>
@@ -323,6 +342,27 @@
         AOS.init({ duration: 1000, once: true, mirror: false, offset: 50 });
         VanillaTilt.init(document.querySelectorAll("[data-tilt]"));
     });
+
+    // 🚀 W3SCHOOLS REAL-TIME JAVASCRIPT SEARCH FUNCTION
+    function filterFeaturedCars() {
+        var input, filter, grid, cards, title, i, txtValue;
+        input = document.getElementById("liveSearchInput");
+        filter = input.value.toUpperCase();
+        grid = document.getElementById("featuredCarsGrid");
+        cards = grid.getElementsByClassName("car-item-card");
+
+        for (i = 0; i < cards.length; i++) {
+            title = cards[i].querySelector(".car-title");
+            if (title) {
+                txtValue = title.textContent || title.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    cards[i].style.display = ""; // Show the car
+                } else {
+                    cards[i].style.display = "none"; // Hide the car
+                }
+            }
+        }
+    }
 </script>
 
 @endsection

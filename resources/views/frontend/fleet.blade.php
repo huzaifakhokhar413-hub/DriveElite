@@ -1,6 +1,6 @@
 @extends('frontend.layout')
 
-@section('title', 'Our Exclusive Fleet - Drive Elite')
+@section('title', 'Cars Collection - Drive Elite')
 
 @section('content')
 
@@ -27,27 +27,48 @@
     <div class="relative z-10 w-full max-w-7xl mx-auto px-6 text-center" data-aos="zoom-in" data-aos-duration="1200">
         <div class="inline-flex items-center gap-3 px-5 py-2 rounded-full border border-orange-500/20 backdrop-blur-xl mb-6 shadow-2xl bg-white/5">
             <div class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></div>
-            <span class="text-orange-100 text-[10px] font-black tracking-[0.4em] uppercase">The Elite Garage</span>
+            <span class="text-orange-100 text-[10px] font-black tracking-[0.4em] uppercase">All Luxury Cars</span>
         </div>
         <h1 class="font-poppins text-5xl md:text-7xl font-black text-white tracking-tighter mb-6 italic uppercase">
-            The Exclusive <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600 drop-shadow-[0_0_30px_rgba(249,115,22,0.4)]">Collection.</span>
+            Find Your <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">Dream Car.</span>
         </h1>
         <p class="font-inter text-gray-400 text-lg max-w-2xl mx-auto font-light">
-            Choose from our meticulously maintained collection of premium vehicles for your ultimate journey.
+            Select your favorite vehicle from our premium collection and start your journey.
         </p>
     </div>
 </div>
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 -mt-20 mb-20" data-aos="fade-up" data-aos-delay="200">
     <div class="glass-box rounded-[2.5rem] shadow-[0_30px_60px_rgba(0,0,0,0.4)] p-8 md:p-10">
-        <form action="{{ route('fleet') }}" method="GET" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 items-end">
+        <form action="{{ route('fleet') }}" method="GET" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-end">
             
             <div class="group">
-                <label class="block text-[10px] font-black text-orange-500 uppercase tracking-[0.3em] mb-3 ml-2">Territory</label>
+                <label class="block text-[10px] font-black text-orange-500 uppercase tracking-widest mb-3 ml-2">Choose Brand</label>
+                <div class="relative">
+                    <i class="fa-solid fa-tags absolute left-5 top-4.5 text-gray-400 group-hover:text-orange-500 transition-colors"></i>
+                    <select name="search" class="input-elite w-full rounded-2xl py-4 pl-12 pr-4 outline-none font-inter text-sm font-semibold appearance-none cursor-pointer">
+                        <option value="" class="bg-[#0b1120] text-gray-400">All Brands</option>
+                        @php
+                            try {
+                                $brands = \App\Models\Car::select('brand')->distinct()->whereNotNull('brand')->pluck('brand');
+                            } catch(\Exception $e) {
+                                $brands = collect([]);
+                            }
+                        @endphp
+                        @foreach($brands as $brand)
+                            <option value="{{ $brand }}" class="bg-[#0b1120] text-white" {{ request('search') == $brand ? 'selected' : '' }}>{{ $brand }}</option>
+                        @endforeach
+                    </select>
+                    <i class="fa-solid fa-chevron-down absolute right-5 top-4.5 text-gray-500 pointer-events-none text-xs"></i>
+                </div>
+            </div>
+
+            <div class="group">
+                <label class="block text-[10px] font-black text-orange-500 uppercase tracking-widest mb-3 ml-2">City / Location</label>
                 <div class="relative">
                     <i class="fa-solid fa-location-dot absolute left-5 top-4.5 text-gray-400 group-hover:text-orange-500 transition-colors"></i>
                     <select name="location" class="input-elite w-full rounded-2xl py-4 pl-12 pr-4 outline-none font-inter text-sm font-semibold appearance-none cursor-pointer">
-                        <option value="" class="bg-[#0b1120] text-gray-400">Global Coverage</option>
+                        <option value="" class="bg-[#0b1120] text-gray-400">All Pakistan</option>
                         @php $cities = ['Islamabad', 'Lahore', 'Karachi', 'Faisalabad', 'Rawalpindi', 'Multan', 'Sargodha', 'Gujranwala', 'Bahawalpur', 'Hyderabad', 'Peshawar', 'Sialkot', 'Sukkur', 'Jhelum', 'Quetta']; @endphp
                         @foreach($cities as $city)
                             <option value="{{ $city }}" class="bg-[#0b1120] text-white" {{ request('location') == $city ? 'selected' : '' }}>{{ $city }}</option>
@@ -58,33 +79,23 @@
             </div>
 
             <div class="group">
-                <label class="block text-[10px] font-black text-orange-500 uppercase tracking-[0.3em] mb-3 ml-2">Departure</label>
-                <input type="datetime-local" name="pickup_date" value="{{ request('pickup_date') }}" class="input-elite color-scheme-dark w-full rounded-2xl py-4 px-5 outline-none font-inter text-sm font-semibold">
-            </div>
-
-            <div class="group">
-                <label class="block text-[10px] font-black text-orange-500 uppercase tracking-[0.3em] mb-3 ml-2">Return</label>
-                <input type="datetime-local" name="return_date" value="{{ request('return_date') }}" class="input-elite color-scheme-dark w-full rounded-2xl py-4 px-5 outline-none font-inter text-sm font-semibold">
-            </div>
-
-            <div class="group">
-                <label class="block text-[10px] font-black text-orange-500 uppercase tracking-[0.3em] mb-3 ml-2">Vehicle Class</label>
+                <label class="block text-[10px] font-black text-orange-500 uppercase tracking-widest mb-3 ml-2">Car Type</label>
                 <div class="relative">
                     <i class="fa-solid fa-car-side absolute left-5 top-4.5 text-gray-400 group-hover:text-orange-500 transition-colors"></i>
                     <select name="category" class="input-elite w-full rounded-2xl py-4 pl-12 pr-4 outline-none font-inter text-sm font-semibold appearance-none cursor-pointer">
-                        <option value="" class="bg-[#0b1120] text-gray-400">All Classes</option>
-                        <option value="SUV" class="bg-[#0b1120] text-white" {{ request('category') == 'SUV' ? 'selected' : '' }}>Luxury SUV</option>
-                        <option value="Sedan" class="bg-[#0b1120] text-white" {{ request('category') == 'Sedan' ? 'selected' : '' }}>Executive Sedan</option>
-                        <option value="Sports" class="bg-[#0b1120] text-white" {{ request('category') == 'Sports' ? 'selected' : '' }}>Sports / Coupe</option>
+                        <option value="" class="bg-[#0b1120] text-gray-400">All Types</option>
+                        <option value="SUV" class="bg-[#0b1120] text-white" {{ request('category') == 'SUV' ? 'selected' : '' }}>SUV / Jeep</option>
+                        <option value="Sedan" class="bg-[#0b1120] text-white" {{ request('category') == 'Sedan' ? 'selected' : '' }}>Sedan / Family</option>
+                        <option value="Sports" class="bg-[#0b1120] text-white" {{ request('category') == 'Sports' ? 'selected' : '' }}>Luxury / Sports</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-5 top-4.5 text-gray-500 pointer-events-none text-xs"></i>
                 </div>
             </div>
 
-            <div>
-                <button type="submit" class="group w-full bg-white text-[#0b1120] hover:text-white font-poppins font-black text-[10px] uppercase tracking-[0.3em] py-4.5 rounded-2xl transition-all shadow-xl hover:shadow-orange-500/30 overflow-hidden relative italic">
+            <div class="h-full flex items-end">
+                <button type="submit" class="group w-full bg-white text-[#0b1120] hover:text-white font-poppins font-black text-xs uppercase tracking-widest py-4.5 rounded-2xl transition-all shadow-xl hover:shadow-orange-500/30 overflow-hidden relative italic h-[54px]">
                     <span class="relative z-10 flex justify-center items-center gap-2">
-                        <i class="fa-solid fa-sliders"></i> Filter Fleet
+                        <i class="fa-solid fa-magnifying-glass text-lg"></i> Search Now
                     </span>
                     <div class="absolute inset-0 bg-orange-600 translate-y-full group-hover:translate-y-0 transition-transform duration-500 z-0"></div>
                 </button>
@@ -95,13 +106,13 @@
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-32">
     
-    @if(request()->anyFilled(['location', 'pickup_date', 'category']))
+    @if(request()->anyFilled(['location', 'search', 'category']))
         <div class="mb-12 pb-6 border-b border-gray-200 flex justify-between items-center" data-aos="fade-in">
             <p class="font-poppins font-black text-gray-800 italic uppercase tracking-widest text-sm">
-                Showing Custom Results
+                Showing Results for: <span class="text-orange-500">{{ request('search') ?: 'Applied Filters' }}</span>
             </p>
-            <a href="{{ route('fleet') }}" class="text-[10px] font-black text-red-500 hover:text-white hover:bg-red-500 transition-all uppercase tracking-[0.2em] flex items-center gap-2 px-4 py-2 rounded-full border border-red-200">
-                <i class="fa-solid fa-xmark"></i> Clear Filters
+            <a href="{{ route('fleet') }}" class="text-[10px] font-black text-red-500 hover:text-white hover:bg-red-500 transition-all uppercase tracking-widest flex items-center gap-2 px-4 py-2 rounded-full border border-red-200">
+                <i class="fa-solid fa-xmark"></i> Clear All
             </a>
         </div>
     @endif
@@ -118,12 +129,12 @@
                          class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000">
                     
                     @if($car->is_available)
-                        <div class="absolute top-5 left-5 bg-white/95 backdrop-blur-md text-[#0b1120] text-[9px] font-black uppercase tracking-[0.2em] px-4 py-2 rounded-2xl shadow-xl flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> Ready
+                        <div class="absolute top-5 left-5 bg-white/95 backdrop-blur-md text-[#0b1120] text-[9px] font-black uppercase tracking-widest px-4 py-2 rounded-2xl shadow-xl flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> Available
                         </div>
                     @else
-                        <div class="absolute top-5 left-5 bg-[#0b1120]/95 backdrop-blur-md text-white text-[9px] font-black uppercase tracking-[0.2em] px-4 py-2 rounded-2xl shadow-xl flex items-center gap-2 border border-red-500/30">
-                            <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Reserved
+                        <div class="absolute top-5 left-5 bg-[#0b1120]/95 backdrop-blur-md text-white text-[9px] font-black uppercase tracking-widest px-4 py-2 rounded-2xl shadow-xl flex items-center gap-2 border border-red-500/30">
+                            <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Booked
                         </div>
                     @endif
 
@@ -134,7 +145,7 @@
 
                 <div class="p-8 flex-grow flex flex-col">
                     <div class="mb-6">
-                        <p class="text-[10px] font-black text-orange-500 uppercase tracking-[0.3em] mb-2 italic">{{ $car->category->name ?? 'Premium' }}</p>
+                        <p class="text-[10px] font-black text-orange-500 uppercase tracking-widest mb-2 italic">{{ $car->category->name ?? 'Premium' }}</p>
                         <h3 class="font-poppins text-3xl font-black text-[#0b1120] leading-tight uppercase italic">
                             {{ $car->brand ?? 'Luxury' }} <br> <span class="text-gray-400 group-hover:text-[#0b1120] transition-colors">{{ $car->model_name ?? 'Vehicle' }}</span>
                         </h3>
@@ -156,8 +167,8 @@
                     </div>
 
                     <div class="mt-auto">
-                        <a href="{{ route('car.show', $car->id) }}" class="flex items-center justify-center gap-4 w-full bg-[#0b1120] text-white py-6 rounded-2xl font-black text-xs uppercase tracking-[0.3em] group-hover:bg-orange-600 transition-all duration-500 italic shadow-xl">
-                            Command Machine <i class="fa-solid fa-chevron-right"></i>
+                        <a href="{{ route('car.show', $car->id) }}" class="flex items-center justify-center gap-4 w-full bg-[#0b1120] text-white py-6 rounded-2xl font-black text-xs uppercase tracking-widest group-hover:bg-orange-600 transition-all duration-500 italic shadow-xl">
+                            View Details <i class="fa-solid fa-chevron-right"></i>
                         </a>
                     </div>
                 </div>
@@ -168,10 +179,10 @@
                 <div class="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-8 border border-gray-100">
                     <i class="fa-solid fa-magnifying-glass text-3xl text-gray-300"></i>
                 </div>
-                <h3 class="font-poppins text-3xl font-black text-[#0b1120] mb-4 italic uppercase">No Machines Found</h3>
-                <p class="text-gray-500 mb-8 font-medium">We couldn't find any vehicles matching your executive criteria.</p>
-                <a href="{{ route('fleet') }}" class="bg-[#0b1120] text-white px-10 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] hover:bg-orange-500 transition-all shadow-xl italic">
-                    Reset Elite Filters
+                <h3 class="font-poppins text-3xl font-black text-[#0b1120] mb-4 italic uppercase">No Cars Found</h3>
+                <p class="text-gray-500 mb-8 font-medium">We could not find any car matching your search.</p>
+                <a href="{{ route('fleet') }}" class="bg-[#0b1120] text-white px-10 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-orange-500 transition-all shadow-xl italic">
+                    Clear Filters
                 </a>
             </div>
         @endforelse
