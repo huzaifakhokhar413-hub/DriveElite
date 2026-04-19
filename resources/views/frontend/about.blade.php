@@ -59,7 +59,7 @@
 
 <div class="relative w-full h-[85vh] flex flex-col items-center justify-center overflow-hidden bg-[#0b1120]">
     <div class="absolute inset-0 z-0">
-        <video autoplay loop muted playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover opacity-40 transform scale-105 pointer-events-none">
+        <video autoplay loop muted playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover opacity-30 transform scale-105 pointer-events-none">
             <source src="{{ asset('videos/bg.mp4') }}" type="video/mp4">
             Your browser does not support the video tag.
         </video>

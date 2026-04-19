@@ -175,12 +175,18 @@ Route::get('/run-storage-link', function() {
 // 🚀 NEW: THE SPEED BOOST ROUTE (To fix slow loading on Railway)
 Route::get('/speed-boost', function() {
     try {
+        // Sab kuch clear karke fresh cache banayein
+        Artisan::call('optimize:clear');
         Artisan::call('config:cache');
         Artisan::call('route:cache');
         Artisan::call('view:cache');
-        return "<h1>BOOST ACTIVATED! 🚀</h1><p>Aapki website ab maximum speed par hai.</p><a href='/'>Go to Home</a>";
+        
+        // 🚀 NEW: Event aur Optimization cache
+        Artisan::call('event:cache');
+        
+        return "<h1>ULTIMATE BOOST ACTIVATED! ⚡</h1><p>Website is now running from pre-compiled memory.</p>";
     } catch (\Exception $e) {
-        return "<h1>Error!</h1><p>" . $e->getMessage() . "</p>";
+        return "<h1>Error:</h1> " . $e->getMessage();
     }
 });
 

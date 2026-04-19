@@ -11,7 +11,7 @@
 <style>
     .hero-glow { filter: blur(120px); opacity: 0.4; }
     .glass-box { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
-    .orange-text-shine { background: linear-gradient(90deg, #f97316, #fff, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-size: 200% auto; animation: shine 5s linear infinite; }
+    .orange-text-shine { background: linear-gradient(90deg, #f97316, #fff, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-size: 200% auto; animation: shine 4s linear infinite; }
     @keyframes shine { to { background-position: 200% center; } }
     
     .luxury-marquee { background: #070b14; border-y: 1px solid rgba(255,255,255,0.03); overflow: hidden; padding: 30px 0; }
