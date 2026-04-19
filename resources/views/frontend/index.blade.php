@@ -42,7 +42,7 @@
 <div class="relative w-full min-h-screen flex items-center justify-center overflow-hidden bg-[#0b1120]">
     <div class="absolute inset-0 z-0">
         <video autoplay loop muted playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover opacity-40 transform scale-105 pointer-events-none">
-            <source src="{{ asset('videos/bm.mp4') }}" type="video/mp4">
+            <source src="{{ asset('videos/bg.mp4') }}" type="video/mp4">
             Your browser does not support the video tag.
         </video>
         <div class="absolute inset-0 bg-gradient-to-r from-transparent via-[#0b1120]/30 to-transparent"></div>
