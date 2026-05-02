@@ -76,13 +76,22 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        // 1. Logout hone se pehle check karo ke user ADMIN tha ya NORMAL?
+        $role = $request->user() ? $request->user()->role : 'user';
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
 
-        // 🌟 VIP Update: SweetAlert Message on Secure Logout
+        // 3. SMART REDIRECT: Agar Admin logout ho raha hai toh wapis Vault par bhejo
+        if ($role === 'admin') {
+            return redirect()->route('admin.login.page')
+                ->with('success', 'Vault securely locked. Goodbye Commander.');
+        }
+
+        // 🌟 VIP Update: SweetAlert Message on Secure Logout for Normal User
         return redirect('/')
             ->with('success', 'You have been securely logged out. We hope to serve you again soon.');
     }
