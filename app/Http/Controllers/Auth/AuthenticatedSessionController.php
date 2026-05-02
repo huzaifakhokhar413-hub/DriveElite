@@ -50,6 +50,20 @@ class AuthenticatedSessionController extends Controller
         // 🌟 3. REGULAR LOGIN PROCESS (Agar Captcha theek hai toh Login karega)
         $request->authenticate();
 
+        // 🚀 4. ELITE SECURITY PROTOCOL: Admin ko normal login se block karo
+        if ($request->user()->role === 'admin') {
+            
+            // Foran logout karo aur session destroy karo
+            auth()->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            // Error message ke sath wapis normal login page par bhej do
+            return back()->withErrors([
+                'email' => 'Security Alert: Administrators must use the Secure Vault to log in.',
+            ]);
+        }
+
         $request->session()->regenerate();
 
         // 🌟 VIP Update: SweetAlert Message on Successful Login

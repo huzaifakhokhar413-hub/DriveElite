@@ -19,7 +19,7 @@ use App\Http\Controllers\Admin\ContactController as AdminContactController;
 use App\Http\Controllers\ReviewController; 
 use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
 use App\Http\Controllers\Admin\NewsletterController as AdminNewsletterController;
-use Illuminate\Support\Facades\Artisan; // 🚀 Added for the fix
+use Illuminate\Support\Facades\Artisan; 
 use Illuminate\Support\Facades\Mail;
 
 // ==========================================
@@ -111,6 +111,15 @@ Route::middleware('auth')->group(function () {
 // ==========================================
 // 4. TOP SECRET ADMIN VAULT (Only for Admin)
 // ==========================================
+
+// 🚀 1. CUSTOM ADMIN LOGIN PAGE ROUTE
+Route::get('/admin-login-elite', function () {
+    return view('admin.login'); 
+})->name('admin.login.page');
+
+// 🚀 2. CUSTOM ADMIN LOGIN SUBMIT ROUTE
+Route::post('/admin-login-elite', [SettingController::class, 'adminLogin'])->name('admin.login.submit');
+
 Route::middleware(['auth', 'admin'])->prefix('noor-secure-vault-786')->group(function () {
     
     Route::get('/dashboard', function () {

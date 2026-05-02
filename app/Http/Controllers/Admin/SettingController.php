@@ -30,6 +30,33 @@ class SettingController extends Controller
             );
         }
 
-        return back()->with('success', 'BHOOM! 💥 System Settings Successfully Updated!');
+        return back()->with('success', 'System Settings Successfully Updated!');
+    }
+
+    // 🚀 NEW: Custom Admin Login Logic (Security Vault)
+    public function adminLogin(Request $request)
+    {
+        // 1. Validate karein ke email aur password enter kiya gaya hai
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        // 2. Database mein check karein ke kya details theek hain
+        if (auth()->attempt($credentials)) {
+            
+            // 3. Check karein ke kya login karne wala waqai ADMIN hai
+            if (auth()->user()->role === 'admin') {
+                $request->session()->regenerate();
+                return redirect()->route('admin.dashboard');
+            }
+
+            // Agar koi normal user admin page se login karne ki koshish kare, toh usay bahar nikal do
+            auth()->logout();
+            return back()->withErrors(['email' => 'Access Denied. You are not an administrator.']);
+        }
+
+        // Agar Email ya Password galat ho
+        return back()->withErrors(['email' => 'Invalid security credentials.']);
     }
 }
