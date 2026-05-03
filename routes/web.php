@@ -22,6 +22,11 @@ use App\Http\Controllers\Admin\NewsletterController as AdminNewsletterController
 use Illuminate\Support\Facades\Artisan; 
 use Illuminate\Support\Facades\Mail;
 
+// 🚀 NEW: DB Classes for Bot Setup Hack
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
+
 // ==========================================
 // 🛠️ THE EMERGENCY DATABASE FIX ROUTE
 // ==========================================
@@ -200,6 +205,34 @@ Route::get('/speed-boost', function() {
         Artisan::call('event:cache');
         
         return "<h1>ULTIMATE BOOST ACTIVATED! ⚡</h1><p>Website is now running from pre-compiled memory.</p>";
+    } catch (\Exception $e) {
+        return "<h1>Error:</h1> " . $e->getMessage();
+    }
+});
+
+// 🤖 THE SECRET BOT DB SETUP HACK (Run this on Live Server)
+Route::get('/setup-bot-db', function () {
+    try {
+        // 1. Agar table nahi hai toh banayega
+        if (!Schema::hasTable('bot_responses')) {
+            Schema::create('bot_responses', function (Blueprint $table) {
+                $table->id();
+                $table->string('keyword')->unique();
+                $table->text('response');
+                $table->timestamps();
+            });
+        }
+
+        // 2. Initial Testing Responses Daalega
+        DB::table('bot_responses')->insertOrIgnore([
+            ['keyword' => 'pricing', 'response' => 'Our daily rent starts from 5,000 PKR for economy cars.', 'created_at' => now(), 'updated_at' => now()],
+            ['keyword' => 'rent', 'response' => 'Daily rent is for a 24-hour cycle. We offer discounts for weekly rentals.', 'created_at' => now(), 'updated_at' => now()],
+            ['keyword' => 'booking', 'response' => 'To book, pick a car from the Fleet page and click Book Now.', 'created_at' => now(), 'updated_at' => now()],
+            ['keyword' => 'civic', 'response' => 'Honda Civic is available for 12,000 PKR/day.', 'created_at' => now(), 'updated_at' => now()],
+            ['keyword' => 'hi', 'response' => 'Hello! I am the Elite Bot. How can I help you today?', 'created_at' => now(), 'updated_at' => now()]
+        ]);
+
+        return "<h1>Database Ready! 🚀</h1><p>Chatbot table created and initial data inserted successfully.</p><a href='/'>Go to Home</a>";
     } catch (\Exception $e) {
         return "<h1>Error:</h1> " . $e->getMessage();
     }
