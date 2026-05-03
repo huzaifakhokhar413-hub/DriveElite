@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Car;
 use App\Models\Category;
 use App\Models\Setting;
-use App\Models\Newsletter; // 🚀 Newsletter Model Import kiya
+use App\Models\Newsletter; 
+use App\Models\BotResponse; // 🚀 Database Fallback ke liye Model
+use Illuminate\Support\Facades\Http; 
 
 class FrontendController extends Controller
 {
@@ -85,14 +87,13 @@ class FrontendController extends Controller
     }
 
     /**
-     * 🚀 NEWSLETTER SUBSCRIPTION LOGIC (Step 2)
+     * 🚀 NEWSLETTER SUBSCRIPTION LOGIC
      */
     public function subscribe(Request $request)
     {
         $request->validate([
             'email' => 'required|email|unique:newsletters,email',
         ], [
-            // ✅ English Messages (Professional Standard)
             'email.unique' => 'You are already subscribed to our newsletter.',
             'email.email' => 'Please enter a valid email address.'
         ]);
@@ -101,29 +102,69 @@ class FrontendController extends Controller
             'email' => $request->email
         ]);
 
-        // ✅ Professional Success Message
         return back()->with('success', 'Thank you! You have successfully subscribed to our newsletter.');
     }
 
     /**
-     * 🤖 CUSTOM AI CHATBOT LOGIC
+     * 🤖 HYBRID CHATBOT LOGIC (AI + Database Fallback)
      */
     public function chatbotReply(Request $request)
     {
         $userMessage = strtolower($request->message);
-        $botResponses = \App\Models\BotResponse::all();
-        
-        // Default answer if bot does not understand
-        $reply = "I am sorry, I did not understand that. Please mail at driveelie099@gmail.com";
+        $apiKey = env('GEMINI_API_KEY');
 
-        // Search for keyword in user message
-        foreach ($botResponses as $bot) {
-            if (str_contains($userMessage, strtolower($bot->keyword))) {
-                $reply = $bot->response;
-                break; // Stop searching once we find a match
+        // 🛡️ PLAN B: DATABASE FALLBACK FUNCTION
+        // Yeh function tab chalega jab AI fail hoga
+        $dbFallback = function() use ($userMessage) {
+            $botResponses = BotResponse::all();
+            $reply = "I am sorry, I did not understand that. Please email us at driveelite099@gmail.com";
+            
+            foreach ($botResponses as $bot) {
+                if (str_contains($userMessage, strtolower($bot->keyword))) {
+                    $reply = $bot->response;
+                    break;
+                }
             }
+            return response()->json(['reply' => $reply]);
+        };
+
+        // Agar API key .env mein nahi hai, toh seedha Database use karo
+        if (!$apiKey) {
+            return $dbFallback();
         }
 
-        return response()->json(['reply' => $reply]);
+        $systemPrompt = "You are the official customer support AI for 'Drive Elite', a premium car rental SaaS platform in Pakistan. 
+        Your rules:
+        1. Keep answers very short, polite, and conversational (max 2-3 sentences).
+        2. Our daily rent starts from 5,000 PKR. We have Sedans, SUVs, and Economy cars.
+        3. Our office is in Sargodha, but we deliver to Lahore, Islamabad, and Faisalabad.
+        4. Do NOT use bold (**text**) or markdown formatting. Just plain text.
+        5. If asked about features, mention our advanced search, VIP accessibility widget, and secure customer portal.
+        
+        User's message: " . $userMessage;
+
+        try {
+            // PLAN A: Google AI (gemini-1.5-flash) ko try karo
+            $response = Http::withoutVerifying()
+                ->withHeaders(['Content-Type' => 'application/json'])
+                ->post("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={$apiKey}", [
+                'contents' => [
+                    ['parts' => [['text' => $systemPrompt]]]
+                ]
+            ]);
+
+            // Agar AI ne sahi jawab diya
+            if ($response->successful()) {
+                $reply = $response->json()['candidates'][0]['content']['parts'][0]['text'];
+                $reply = str_replace(['**', '*', '`'], '', $reply);
+                return response()->json(['reply' => trim($reply)]);
+            } else {
+                // 🚨 AI FAILED (Error 404/500): Khamoshi se Database wala jawab de do!
+                return $dbFallback();
+            }
+        } catch (\Exception $e) {
+            // 🚨 NETWORK FAILED (SSL Error/Internet Issue): Khamoshi se Database wala jawab de do!
+            return $dbFallback();
+        }
     }
 }

@@ -7,17 +7,23 @@ use App\Models\Booking;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Mail; 
-use App\Mail\BookingStatusMail; // 🌟 Hamari nayi Dynamic VIP Email Class
+use App\Mail\BookingStatusMail; // 🌟 Hamari Dynamic VIP Email Class
 
 class BookingController extends Controller
 {
+    /**
+     * Display a listing of all reservations.
+     */
     public function index()
     {
-        // 🌟 'user' relationship load karna zaroori hai performance ke liye
+        // 'user' aur 'car' relationship load karna performance ke liye behtar hai
         $bookings = Booking::with(['car', 'user'])->latest()->get();
         return view('admin.bookings.index', compact('bookings'));
     }
 
+    /**
+     * Update reservation status and notify customer via email.
+     */
     public function update(Request $request, Booking $booking)
     {
         $request->validate(['status' => 'required|string']);
@@ -27,8 +33,7 @@ class BookingController extends Controller
 
         // 🌟 VIP Dynamic Email Logic
         if ($oldStatus !== $request->status) {
-            
-            // Sirf tab email bhejni hai jab status Pending se in 3 mein se kisi aik par aaye
+            // Sirf tab email bhejni hai jab status Pending se Approved, Completed, ya Cancelled par aaye
             if (in_array($request->status, ['Approved', 'Completed', 'Cancelled'])) {
                 Mail::to($booking->user->email)->send(new BookingStatusMail($booking));
             }
@@ -37,27 +42,80 @@ class BookingController extends Controller
         return back()->with('success', 'Reservation status updated & Customer Notified!');
     }
 
+    /**
+     * Generate and download the PDF invoice for a booking.
+     */
     public function invoice(Booking $booking)
     {
         $settings = \App\Models\Setting::pluck('value', 'key')->toArray();
 
-        // PDF ko data bheja
+        // PDF view ko data pass kiya
         $pdf = Pdf::loadView('admin.bookings.invoice', compact('booking', 'settings'));
         
         return $pdf->download('DriveElite-Invoice-00' . $booking->id . '.pdf');
     }
 
+    /**
+     * Delete a financial/reservation record securely.
+     */
     public function destroy(Booking $booking)
     {
         $booking->delete();
-        return back()->with('success', 'Reservation deleted securely!');
+        return back()->with('success', 'Record deleted securely!');
     }
 
+    /**
+     * 🤖 Financial Dashboard Logic: Calculates revenue and pending amounts.
+     */
     public function payments()
     {
-        // 🌟 Yahan bhi 'user' add kiya hai
-        $bookings = Booking::where('status', 'Completed')->with(['car', 'user'])->latest()->get();
-        $total_revenue = $bookings->sum('total_price');
-        return view('admin.payments', compact('bookings', 'total_revenue'));
+        // 1. Total Revenue: Sirf 'Completed' bookings ka sum
+        $totalRevenue = Booking::where('status', 'Completed')->sum('total_price');
+
+        // 2. Pending Clearance: 'Pending' aur 'Approved' dono shamil hain
+        $pendingClearance = Booking::whereIn('status', ['Pending', 'Approved'])->sum('total_price');
+
+        // 3. Completed Transactions Count
+        $completedTransactions = Booking::where('status', 'Completed')->count();
+
+        // 4. All Transactions: With actual user and car data from frontend
+        $recentTransactions = Booking::with(['car', 'user'])->latest()->get();
+
+        return view('admin.payments', compact(
+            'totalRevenue', 
+            'pendingClearance', 
+            'completedTransactions', 
+            'recentTransactions'
+        ));
+    }
+
+    /**
+     * 🚀 NEW: Export to CSV (Excel Compatible Ledger).
+     */
+    public function exportLeads()
+    {
+        $bookings = Booking::with('user')->get();
+        $filename = "DriveElite_Financial_Ledger_" . date('Y-m-d') . ".csv";
+        $handle = fopen('php://output', 'w');
+        
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+
+        // CSV Headers: Ref ID, Customer Name, Email, Amount, Status, Date
+        fputcsv($handle, ['Ref ID', 'Customer Name', 'Email', 'Amount (PKR)', 'Status', 'Date']);
+
+        foreach ($bookings as $row) {
+            fputcsv($handle, [
+                'BKG-' . $row->id,
+                $row->user->name ?? 'Guest',
+                $row->user->email ?? 'N/A',
+                $row->total_price,
+                $row->status,
+                $row->created_at->format('Y-m-d')
+            ]);
+        }
+
+        fclose($handle);
+        exit;
     }
 }

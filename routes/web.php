@@ -156,7 +156,10 @@ Route::middleware(['auth', 'admin'])->prefix('noor-secure-vault-786')->group(fun
     Route::resource('maintenances', MaintenanceController::class);
     Route::resource('users', UserController::class)->only(['index', 'destroy']);
     
+    // 📊 PAYMENTS & FINANCIAL ROUTES
     Route::get('/payments', [AdminBookingController::class, 'payments'])->name('admin.payments');
+    Route::get('/payments/export', [AdminBookingController::class, 'exportLeads'])->name('admin.payments.export'); // 🚀 NEW EXPORT ROUTE
+    
     Route::get('/settings', [SettingController::class, 'index'])->name('admin.settings');
     Route::post('/settings', [SettingController::class, 'update'])->name('admin.settings.update');
 
