@@ -24,6 +24,9 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
     <style>
+        /* 🚀 ACCESSIBILITY: Smooth Scrolling Enable */
+        html { scroll-behavior: smooth; transition: font-size 0.3s ease; }
+
         .font-poppins { font-family: 'Poppins', sans-serif; }
         .font-inter { font-family: 'Inter', sans-serif; }
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; overflow-x: hidden; }
@@ -34,6 +37,33 @@
         ::-webkit-scrollbar-thumb:hover { background: #f97316; }
 
         .glass-nav { background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); box-shadow: 0 4px 20px -1px rgba(0, 0, 0, 0.08); }
+
+        /* 🚀 ACCESSIBILITY: Visual Focus Glow when skipping */
+        #main-content:focus {
+            outline: none;
+            box-shadow: 0 0 0 5px rgba(249, 115, 22, 0.4);
+            border-radius: 20px;
+            transition: box-shadow 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* 🚀 ACCESSIBILITY FEATURE 2: HIGH CONTRAST MASTER CSS */
+        body.high-contrast {
+            filter: invert(100%) hue-rotate(180deg) contrast(120%);
+            background-color: #111;
+        }
+        body.high-contrast img, 
+        body.high-contrast video,
+        body.high-contrast #accessibility-widget {
+            filter: invert(100%) hue-rotate(180deg);
+        }
+
+        /* 🚀 ACCESSIBILITY FEATURE 4: PAUSE ALL ANIMATIONS */
+        body.pause-animations,
+        body.pause-animations * {
+            animation: none !important;
+            transition: none !important;
+            scroll-behavior: auto !important;
+        }
 
         /* Custom SweetAlert Ultra-Premium Styles */
         .swal2-timer-progress-bar { background: linear-gradient(90deg, #f97316, #ea580c) !important; height: 4px !important; }
@@ -46,7 +76,7 @@
         }
         .animate-branding { animation: branding-glow 4s ease-in-out infinite; }
 
-        /* 🚀 PAGE UP/DOWN BUTTONS (FIXED AT RIGHT MID) 🚀 */
+        /* 🚀 PAGE UP/DOWN BUTTONS */
         .scroll-controls { position: fixed; right: 20px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 10px; z-index: 100; }
         .scroll-btn { width: 40px; height: 40px; background: #0f172a; color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; transition: all 0.3s ease; border: 1px solid rgba(249, 115, 22, 0.3); opacity: 0.7; }
         .scroll-btn:hover { background: #f97316; opacity: 1; transform: translateX(-5px); box-shadow: 0 5px 15px rgba(249, 115, 22, 0.4); }
@@ -56,7 +86,60 @@
         #mobile-menu.active { transform: translateY(0); opacity: 1; pointer-events: auto; }
     </style>
 </head>
-<body class="text-gray-800 antialiased selection:bg-orange-500 selection:text-white flex flex-col min-h-screen">
+<body class="text-gray-800 antialiased selection:bg-orange-500 selection:text-white flex flex-col min-h-screen transition-all duration-500">
+
+    <!-- 🚀 VIP ACCESSIBILITY WIDGET -->
+    <div id="accessibility-widget" class="fixed left-0 top-[40%] z-[999999] group">
+        <!-- Floating Button -->
+        <button onclick="document.getElementById('access-panel').classList.toggle('hidden')" class="bg-blue-950 text-white w-12 h-12 flex items-center justify-center rounded-r-xl shadow-[0_4px_15px_rgba(0,0,0,0.3)] hover:w-14 hover:bg-orange-500 transition-all focus:outline-none focus:ring-4 focus:ring-orange-500" title="Accessibility Options">
+            <i class="fa-solid fa-universal-access text-2xl"></i>
+        </button>
+        
+        <!-- Dropdown Menu -->
+        <div id="access-panel" class="hidden absolute top-0 left-14 bg-white rounded-xl shadow-2xl border border-gray-200 w-64 overflow-hidden origin-left transition-all duration-300">
+            <div class="bg-blue-950 text-white py-3 px-4 font-poppins font-bold text-sm tracking-widest uppercase flex justify-between items-center">
+                <span>Accessibility</span>
+                <button onclick="document.getElementById('access-panel').classList.add('hidden')" class="hover:text-orange-500 focus:outline-none">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            
+            <div class="p-4 space-y-5">
+                <!-- Feature 2: High Contrast -->
+                <div>
+                    <p class="text-[10px] text-gray-500 font-bold mb-2 uppercase tracking-wider">Vision Impairment</p>
+                    <button onclick="toggleHighContrast()" class="w-full bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-800 py-2.5 px-3 rounded-lg flex items-center justify-between transition-colors focus:ring-2 focus:ring-orange-500 font-semibold text-sm">
+                        <span>High Contrast</span>
+                        <i class="fa-solid fa-circle-half-stroke text-orange-500"></i>
+                    </button>
+                </div>
+
+                <!-- Feature 3: Text Size -->
+                <div>
+                    <p class="text-[10px] text-gray-500 font-bold mb-2 uppercase tracking-wider">Text Size</p>
+                    <div class="flex gap-2">
+                        <button onclick="changeTextSize('decrease')" class="flex-1 bg-gray-50 hover:bg-gray-200 border border-gray-200 py-1.5 rounded font-bold text-sm transition-colors text-blue-950 focus:ring-2 focus:ring-orange-500" title="Decrease Text Size">A-</button>
+                        <button onclick="changeTextSize('reset')" class="flex-1 bg-gray-50 hover:bg-gray-200 border border-gray-200 py-1.5 rounded font-bold text-base transition-colors text-blue-950 focus:ring-2 focus:ring-orange-500" title="Reset Text Size">A</button>
+                        <button onclick="changeTextSize('increase')" class="flex-1 bg-gray-50 hover:bg-gray-200 border border-gray-200 py-1.5 rounded font-bold text-lg transition-colors text-blue-950 focus:ring-2 focus:ring-orange-500" title="Increase Text Size">A+</button>
+                    </div>
+                </div>
+                
+                <!-- 🚀 Feature 4: Animations (ZINDA HO GAYA!) -->
+                <div>
+                    <p class="text-[10px] text-gray-500 font-bold mb-2 uppercase tracking-wider">Motion / Vestibular</p>
+                    <button id="toggle-animations-btn" onclick="toggleAnimations()" class="w-full bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-800 py-2.5 px-3 rounded-lg flex items-center justify-between transition-colors focus:ring-2 focus:ring-orange-500 font-semibold text-sm">
+                        <span id="animations-text">Pause Animations</span>
+                        <i id="animations-icon" class="fa-solid fa-pause text-orange-500"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🚀 VIP ACCESSIBILITY: Skip Link -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-6 focus:left-6 focus:z-[99999] bg-orange-500 text-white px-8 py-4 rounded-xl shadow-[0_10px_40px_rgba(249,115,22,0.8)] font-black uppercase tracking-widest text-sm outline-none ring-4 ring-blue-950">
+        Skip to Main Content
+    </a>
 
     <div class="scroll-controls">
         <div class="scroll-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Go to Top"><i class="fa-solid fa-chevron-up"></i></div>
@@ -120,7 +203,8 @@
         </div>
     </nav>
 
-    <main class="flex-grow pt-20">
+    <!-- 🚀 ACCESSIBILITY: ID added -->
+    <main id="main-content" tabindex="-1" class="flex-grow pt-20 outline-none">
         @yield('content')
     </main>
 
@@ -219,16 +303,6 @@
                     © 2026 Drive Elite Rentals. All rights reserved.
                     <span class="hidden md:block w-12 h-[1px] bg-gradient-to-l from-transparent to-orange-500/50"></span>
                 </p>
-                
-                <div class="inline-flex items-center gap-3 bg-white/5 px-6 py-2 rounded-full border border-white/10 backdrop-blur-sm group hover:border-orange-500/30 transition-all duration-500">
-                    <span class="relative flex h-2 w-2">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
-                    </span>
-                    <p class="text-[9px] font-black uppercase tracking-[0.3em] text-gray-500 group-hover:text-gray-300 transition-colors">
-                        Architected & Developed with Precision
-                    </p>
-                </div>
             </div>
         </div>
     </footer>
@@ -259,13 +333,6 @@
                     background: 'rgba(11, 17, 32, 0.85)', backdrop: `rgba(0,0,0,0.8) backdrop-filter: blur(10px)`, showConfirmButton: false, timer: 5000, timerProgressBar: true, customClass: { popup: 'premium-swal-popup rounded-[2rem]' }, showClass: { popup: 'animate__animated animate__fadeInDown' }, hideClass: { popup: 'animate__animated animate__zoomOut' }
                 });
             @endif
-
-            @if($errors->any())
-                Swal.fire({
-                    html: `<div class="flex flex-col items-center p-4"><div class="w-20 h-20 rounded-full bg-gradient-to-tr from-red-500 to-red-700 flex items-center justify-center mb-6 shadow-[0_0_50px_rgba(220,38,38,0.6)] animate__animated animate__headShake"><i class="fa-solid fa-triangle-exclamation text-white text-4xl"></i></div><h2 class="font-poppins text-2xl font-black text-white tracking-widest uppercase mb-3 drop-shadow-lg">Notice</h2><p class="font-inter text-gray-300 text-base leading-relaxed text-center px-2">{{ $errors->first() }}</p></div>`,
-                    background: 'rgba(11, 17, 32, 0.85)', backdrop: `rgba(0,0,0,0.8) backdrop-filter: blur(10px)`, showConfirmButton: true, confirmButtonText: 'Try Again', confirmButtonColor: '#f97316', customClass: { popup: 'premium-swal-popup rounded-[2rem]' }, showClass: { popup: 'animate__animated animate__fadeInDown' }, hideClass: { popup: 'animate__animated animate__zoomOut' }
-                });
-            @endif
         });
 
         window.addEventListener('scroll', function() {
@@ -278,6 +345,181 @@
                 navbar.classList.add('bg-white');
             }
         });
+
+        // 🚀 1. THE REAL SKIP-TO-MAIN SCRIPT
+        document.querySelector('a[href="#main-content"]').addEventListener('click', function(e) {
+            e.preventDefault();
+            const mainContent = document.getElementById('main-content');
+            if (mainContent) {
+                window.scrollTo({ top: mainContent.offsetTop - 80, behavior: 'smooth' });
+                const firstInput = mainContent.querySelector('input, select, textarea, button');
+                if(firstInput) {
+                    firstInput.focus();
+                    firstInput.style.boxShadow = "0 0 0 4px #f97316";
+                    setTimeout(() => { firstInput.style.boxShadow = ""; }, 2000);
+                } else {
+                    mainContent.setAttribute('tabindex', '-1');
+                    mainContent.focus();
+                }
+            }
+        });
+
+        // 🚀 2. FEATURE 2: HIGH CONTRAST LOGIC
+        function toggleHighContrast() {
+            document.body.classList.toggle('high-contrast');
+            if(document.body.classList.contains('high-contrast')) {
+                localStorage.setItem('highContrast', 'enabled');
+            } else {
+                localStorage.setItem('highContrast', 'disabled');
+            }
+        }
+        if(localStorage.getItem('highContrast') === 'enabled') {
+            document.body.classList.add('high-contrast');
+        }
+
+        // 🚀 3. FEATURE 3: TEXT RESIZER LOGIC
+        let currentZoom = localStorage.getItem('textZoom') ? parseInt(localStorage.getItem('textZoom')) : 100;
+        function applyTextZoom() {
+            document.documentElement.style.fontSize = currentZoom + '%';
+            localStorage.setItem('textZoom', currentZoom);
+        }
+        applyTextZoom();
+
+        function changeTextSize(action) {
+            if (action === 'increase' && currentZoom < 130) {
+                currentZoom += 10;
+            } else if (action === 'decrease' && currentZoom > 80) {
+                currentZoom -= 10;
+            } else if (action === 'reset') {
+                currentZoom = 100;
+            }
+            applyTextZoom();
+        }
+
+        // 🚀 4. FEATURE 4: PAUSE ANIMATIONS LOGIC
+        function toggleAnimations() {
+            document.body.classList.toggle('pause-animations');
+            const isPaused = document.body.classList.contains('pause-animations');
+            
+            // UI Update
+            document.getElementById('animations-text').innerText = isPaused ? 'Play Animations' : 'Pause Animations';
+            document.getElementById('animations-icon').className = isPaused ? 'fa-solid fa-play text-orange-500' : 'fa-solid fa-pause text-orange-500';
+            
+            // Save settings
+            localStorage.setItem('pauseAnimations', isPaused ? 'enabled' : 'disabled');
+        }
+
+        // On Page Load Check
+        if(localStorage.getItem('pauseAnimations') === 'enabled') {
+            document.body.classList.add('pause-animations');
+            document.getElementById('animations-text').innerText = 'Play Animations';
+            document.getElementById('animations-icon').className = 'fa-solid fa-play text-orange-500';
+        }
     </script>
+
+    <!-- 🤖 CUSTOM CHATBOT UI (LEFT SIDE) START -->
+    <!-- Chat Window (Hidden by default) -->
+    <div id="custom-chat-widget" class="fixed bottom-40 left-6 z-50 flex flex-col items-start hidden shadow-2xl transition-all duration-300 origin-bottom-left">
+        <div class="bg-white w-80 sm:w-96 rounded-2xl overflow-hidden border border-gray-200 flex flex-col shadow-2xl">
+            <!-- Header -->
+            <div class="bg-blue-950 text-white p-4 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-robot text-orange-500 text-xl"></i>
+                    <span class="font-poppins font-bold text-sm tracking-wide">Drive Elite Bot</span>
+                </div>
+                <button onclick="toggleCustomChat()" class="text-white hover:text-orange-500 transition-colors focus:outline-none">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            
+            <!-- Chat Messages Box -->
+            <div id="custom-chat-box" class="h-72 p-4 overflow-y-auto bg-gray-50 flex flex-col gap-3 font-inter">
+                <!-- Bot Welcome Message -->
+                <div class="bg-gray-200 text-gray-800 p-3 rounded-tr-xl rounded-bl-xl rounded-br-xl max-w-[85%] self-start text-sm shadow-sm">
+                    Hello! Welcome to Drive Elite. I am your smart assistant. Try asking about "rent", "location", or "documents".
+                </div>
+            </div>
+            
+            <!-- Input Field -->
+            <div class="p-3 bg-white border-t border-gray-200 flex gap-2">
+                <input type="text" id="custom-chat-input" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-500 font-inter" placeholder="Type a message...">
+                <button onclick="sendCustomMessage()" class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors focus:outline-none shadow-md">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Floating Button -->
+    <button onclick="toggleCustomChat()" class="fixed bottom-24 left-6 z-40 bg-blue-950 text-white w-14 h-14 rounded-full shadow-[0_10px_20px_rgba(23,37,84,0.4)] flex items-center justify-center text-2xl hover:bg-orange-500 transition-all duration-300 focus:outline-none border-2 border-white">
+        <i class="fa-solid fa-robot"></i>
+    </button>
+
+    <!-- Chatbot Javascript Logic -->
+    <script>
+        function toggleCustomChat() {
+            const chatWidget = document.getElementById('custom-chat-widget');
+            chatWidget.classList.toggle('hidden');
+        }
+
+        async function sendCustomMessage() {
+            const inputField = document.getElementById('custom-chat-input');
+            const message = inputField.value.trim();
+            if (!message) return; // Prevent empty messages
+
+            const chatBox = document.getElementById('custom-chat-box');
+
+            // 1. Show User Message in Chat
+            chatBox.innerHTML += `
+                <div class="bg-orange-500 text-white p-3 rounded-tl-xl rounded-bl-xl rounded-br-xl max-w-[85%] self-end text-sm shadow-sm">
+                    ${message}
+                </div>
+            `;
+            inputField.value = ''; // Clear input field
+            chatBox.scrollTop = chatBox.scrollHeight; // Scroll to bottom
+
+            try {
+                // 2. Send message to Laravel Backend via Fetch API
+                const response = await fetch('{{ route("chatbot.reply") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ message: message })
+                });
+
+                const data = await response.json();
+
+                // 3. Show Bot Reply in Chat with a small delay for realism
+                setTimeout(() => {
+                    chatBox.innerHTML += `
+                        <div class="bg-gray-200 text-gray-800 p-3 rounded-tr-xl rounded-bl-xl rounded-br-xl max-w-[85%] self-start text-sm shadow-sm">
+                            ${data.reply}
+                        </div>
+                    `;
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                }, 400); // 400ms delay
+
+            } catch (error) {
+                console.error("Chatbot Error:", error);
+                chatBox.innerHTML += `
+                    <div class="bg-red-100 text-red-800 p-3 rounded-tr-xl rounded-bl-xl rounded-br-xl max-w-[85%] self-start text-sm shadow-sm">
+                        Sorry, there was an error connecting to the server.
+                    </div>
+                `;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        }
+
+        // Allow 'Enter' key to send message
+        document.getElementById('custom-chat-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                sendCustomMessage();
+            }
+        });
+    </script>
+    <!-- 🤖 CUSTOM CHATBOT UI (END) -->
+
 </body>
 </html>

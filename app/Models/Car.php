@@ -9,11 +9,11 @@ class Car extends Model
 {
     use HasFactory;
 
-    // Data save karne ki ijazat (Naye 'city' column ke sath)
+    // Data save karne ki ijazat (Naye columns ke sath)
     protected $fillable = [
         'category_id', 'brand', 'model_name', 'city', 'year', 
         'daily_rent', 'is_available', 'seats', 'fuel_type',
-        'transmission', 'description', 'image'
+        'transmission', 'description', 'image', 'is_wheelchair_accessible'
     ];
 
     // Relationship: Ek gari kisi ek category ka hissa hoti hai

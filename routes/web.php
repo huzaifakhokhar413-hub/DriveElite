@@ -75,6 +75,9 @@ Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store
 // 🚀 NEWSLETTER SUBSCRIPTION ROUTE
 Route::post('/newsletter-subscribe', [FrontendController::class, 'subscribe'])->name('newsletter.subscribe');
 
+// 🤖 CUSTOM AI CHATBOT ROUTE
+Route::post('/chatbot-reply', [FrontendController::class, 'chatbotReply'])->name('chatbot.reply');
+
 
 // ==========================================
 // 2. THE TRAFFIC POLICE (Login logic)

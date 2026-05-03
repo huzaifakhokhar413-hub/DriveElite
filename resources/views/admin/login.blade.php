@@ -15,6 +15,9 @@
     <!-- 🌟 ANIMATION LIBRARY -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
+    <!-- 🚀 GOOGLE RECAPTCHA SCRIPT ADDED -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
     <style>
         body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
         .font-poppins { font-family: 'Poppins', sans-serif; }
@@ -108,6 +111,11 @@
                         <input type="password" name="password" required placeholder="••••••••••••" 
                                class="elite-input w-full rounded-xl py-3.5 pl-11 pr-4 text-sm text-white placeholder-gray-600 outline-none tracking-widest">
                     </div>
+                </div>
+
+                <!-- 🚀 DARK THEMED RECAPTCHA WIDGET ADDED -->
+                <div class="flex justify-center pt-2">
+                    <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}" data-theme="dark"></div>
                 </div>
 
                 <button type="submit" class="w-full bg-orange-500 text-white font-black py-3.5 rounded-xl uppercase tracking-[0.2em] text-xs transition-all duration-300 hover:bg-orange-600 hover:shadow-[0_0_20px_rgba(249,115,22,0.3)] mt-6">

@@ -51,6 +51,11 @@ class FrontendController extends Controller
             $query->where('daily_rent', '<=', $request->max_price);
         }
 
+        // 🚀 LOGIC 5: ACCESSIBILITY FEATURE (Wheelchair Filter)
+        if ($request->filled('wheelchair_accessible')) {
+            $query->where('is_wheelchair_accessible', 1);
+        }
+
         // Get results and paginate
         $cars = $query->latest()->paginate(9);
 
@@ -72,11 +77,12 @@ class FrontendController extends Controller
         $settings = Setting::pluck('value', 'key')->toArray();
         return view('frontend.about', compact('settings'));
     }
+    
     public function services()
-{
-    $settings = Setting::pluck('value', 'key')->toArray();
-    return view('frontend.services', compact('settings'));
-}
+    {
+        $settings = Setting::pluck('value', 'key')->toArray();
+        return view('frontend.services', compact('settings'));
+    }
 
     /**
      * 🚀 NEWSLETTER SUBSCRIPTION LOGIC (Step 2)
@@ -97,5 +103,27 @@ class FrontendController extends Controller
 
         // ✅ Professional Success Message
         return back()->with('success', 'Thank you! You have successfully subscribed to our newsletter.');
+    }
+
+    /**
+     * 🤖 CUSTOM AI CHATBOT LOGIC
+     */
+    public function chatbotReply(Request $request)
+    {
+        $userMessage = strtolower($request->message);
+        $botResponses = \App\Models\BotResponse::all();
+        
+        // Default answer if bot does not understand
+        $reply = "I am sorry, I did not understand that. Please mail at driveelie099@gmail.com";
+
+        // Search for keyword in user message
+        foreach ($botResponses as $bot) {
+            if (str_contains($userMessage, strtolower($bot->keyword))) {
+                $reply = $bot->response;
+                break; // Stop searching once we find a match
+            }
+        }
+
+        return response()->json(['reply' => $reply]);
     }
 }
